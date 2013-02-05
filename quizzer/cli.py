@@ -24,3 +24,4 @@ def main():
     quiz.load()
     ui = _cli.CommandLineInterface(quiz=quiz)
     ui.run()
+    ui.display_results()

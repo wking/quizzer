@@ -9,6 +9,9 @@ class UserInterface (object):
     def run(self):
         raise NotImplementedError()
 
+    def display_results(self):
+        raise NotImplementedError()
+
     def get_question(self):
         remaining = [q for q in self.quiz if q not in self.answers]
         if remaining:

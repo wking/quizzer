@@ -24,3 +24,19 @@ class CommandLineInterface (UserInterface):
                 print('correct\n')
             else:
                 print('incorrect\n')
+
+    def display_results(self):
+        for question in self.quiz:
+            if question in self.answers:
+                for answer in self.answers[question]:
+                    self.display_result(question=question, answer=answer)
+
+    def display_result(self, question, answer):
+        if answer['correct']:
+            correct = 'correct'
+        else:
+            correct = 'incorrect'
+        print('question:     {}'.format(question.prompt))
+        print('you answered: {}'.format(answer['answer']))
+        print('which was:    {}'.format(correct))
+        print()
