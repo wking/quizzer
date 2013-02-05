@@ -20,7 +20,7 @@ class CommandLineInterface (UserInterface):
                 if a in ['?', 'help']:
                     print()
                     print(question.prompt)
-                    print(question.hint)
+                    print(question.help)
                     continue
                 break
             correct = self.process_answer(question=question, answer=answer)

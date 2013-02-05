@@ -4,12 +4,12 @@
 		{
 			"prompt": "What is your name?",
 			"answer": "",
-			"hint": "This should be easy"
+			"help": "This should be easy"
 		},
 		{
 			"prompt": "What is your quest?",
 			"answer": "To seek the Holy Grail",
-			"hint": "Think like a Pythonista",
+			"help": "Think like a Pythonista",
 			"dependencies": [
 				"What is your name?"
 				]
@@ -18,7 +18,7 @@
 			"class": "NormalizedStringQuestion",
 			"prompt": "What is your favourite color?",
 			"answer": "blue",
-			"hint": "Channel Sir Lancelot",
+			"help": "Channel Sir Lancelot",
 			"dependencies": [
 				"What is your quest?"
 				]
@@ -26,7 +26,7 @@
 		{
 			"prompt": "What is the capital of Assyria?",
 			"answer": "I don't know that",
-			"hint": "Sir Robin didn't know it either",
+			"help": "Sir Robin didn't know it either",
 			"dependencies": [
 				"What is your quest?"
 				]
