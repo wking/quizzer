@@ -15,8 +15,9 @@
 				]
 		},
 		{
+			"class": "NormalizedStringQuestion",
 			"prompt": "What is your favourite color?",
-			"answer": "Blue",
+			"answer": "blue",
 			"hint": "Channel Sir Lancelot",
 			"dependencies": [
 				"What is your quest?"

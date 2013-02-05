@@ -28,14 +28,20 @@ class Quiz (list):
             raise NotImplementedError('upgrade from {} to {}'.format(
                     version, __version__))
         for state in data['questions']:
-            q = _question.Question()
+            question_class_name = state.pop('class', 'Question')
+            question_class = _question.QUESTION_CLASS[question_class_name]
+            q = question_class()
             q.__setstate__(state)
             self.append(q)
 
     def save(self, **kwargs):
+        questions = []
+        for question in self:
+            state = question.__getstate__()
+            state['class'] = type(question).__name__
         data = {
             'version': __version__,
-            'questions': [question.__getstate__() for question in self],
+            'questions': questions,
             }
         with self._open(mode='w', **kwargs) as f:
             _json.dump(

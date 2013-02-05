@@ -1,3 +1,10 @@
+QUESTION_CLASS = {}
+
+
+def register_question(question_class):
+    QUESTION_CLASS[question_class.__name__] = question_class
+
+
 class Question (object):
     def __init__(self, id=None, prompt=None, answer=None, help=None,
                  dependencies=None):
@@ -36,3 +43,23 @@ class Question (object):
 
     def check(self, answer):
         return answer == self.answer
+
+
+class NormalizedStringQuestion (Question):
+    def normalize(self, string):
+        return string.strip().lower()
+
+    def check(self, answer):
+        return self.normalize(answer) == self.normalize(self.answer)
+
+
+for name,obj in list(locals().items()):
+    if name.startswith('_'):
+        continue
+    try:
+        subclass = issubclass(obj, Question)
+    except TypeError:  # obj is not a class
+        continue
+    if subclass:
+        register_question(obj)
+del name, obj
