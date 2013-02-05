@@ -9,7 +9,10 @@ class CommandLineInterface (UserInterface):
                 break
             print(question.prompt)
             while True:
-                answer = input('? ')
+                try:
+                    answer = input('? ')
+                except EOFError:
+                    answer = 'quit'
                 a = answer.strip().lower()
                 if a in ['q', 'quit']:
                     print()
