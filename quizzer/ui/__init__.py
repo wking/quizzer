@@ -9,7 +9,8 @@ class UserInterface (object):
             answers = _answerdb.AnswerDatabase()
         self.answers = answers
         if stack is None:
-            stack = quiz.leaf_questions()
+            stack = self.answers.get_never_correctly_answered(
+                questions=quiz.leaf_questions())
         self.stack = stack
 
     def run(self):
