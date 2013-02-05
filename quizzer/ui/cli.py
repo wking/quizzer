@@ -13,6 +13,8 @@ class CommandLineInterface (UserInterface):
             if not question:
                 break
             print(question.prompt)
+            if question.multiline:
+                answers = []
             while True:
                 try:
                     answer = input('? ')
@@ -27,7 +29,14 @@ class CommandLineInterface (UserInterface):
                     print(question.prompt)
                     print(question.help)
                     continue
-                break
+                if question.multiline:
+                    answers.append(answer)
+                    if not a:
+                        break
+                else:
+                    break
+            if question.multiline:
+                answer = answers
             correct = self.process_answer(question=question, answer=answer)
             if correct:
                 print('correct\n')

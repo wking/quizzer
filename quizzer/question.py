@@ -19,6 +19,7 @@ class Question (object):
         'id',
         'prompt',
         'answer',
+        'multiline',
         'help',
         'dependencies',
         ]
@@ -40,6 +41,8 @@ class Question (object):
     def __setstate__(self, state):
         if 'id' not in state:
             state['id'] = state.get('prompt', None)
+        if 'multiline' not in state:
+            state['multiline'] = False
         if 'dependencies' not in state:
             state['dependencies'] = []
         for attr in self._state_attributes:
@@ -111,8 +114,10 @@ class ScriptQuestion (Question):
 
     def _invoke(self, answer):
         prefix = '{}-'.format(type(self).__name__)
+        if not self.multiline:
+            answer = [answer]
         with _tempfile.TemporaryDirectory(prefix=prefix) as tempdir:
-            script = '\n'.join(self.setup + [answer] + self.teardown)
+            script = '\n'.join(self.setup + answer + self.teardown)
             status,stdout,stderr = _util.invoke(
                 args=[self.interpreter],
                 stdin=script,
