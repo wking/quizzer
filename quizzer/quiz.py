@@ -41,3 +41,19 @@ class Quiz (list):
             _json.dump(
                 data, f, indent=2, separators=(',', ': '), sort_keys=True)
             f.write('\n')
+
+    def leaf_questions(self):
+        "Questions that are not dependencies of other question"
+        dependents = set()
+        for question in self:
+            dependents.update(question.dependencies)
+        return [q for q in self if q.id not in dependents]
+
+    def get(self, id=None):
+        matches = [q for q in self if q.id == id]
+        if len(matches) == 1:
+            return matches[0]
+        elif len(matches) == 0:
+            raise KeyError(id)
+        raise NotImplementedError(
+            'multiple questions with one ID: {}'.format(matches))
