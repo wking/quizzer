@@ -1,0 +1,15 @@
+{
+	"version": "0.1",
+	"questions": [
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"prompt": "list all the files in the current directory",
+			"answer": "ls",
+			"setup": [
+				"touch file-1 file-2 file-3"
+				],
+			"help": "http://pubs.opengroup.org/onlinepubs/009696699/idx/utilities.html"
+		}
+	]
+}
