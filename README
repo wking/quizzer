@@ -2,6 +2,73 @@ Break learning up into small task-based tests for focused study.
 
 Tests can be defined with prerequites so a student wishing to learn a
 higher level task, but out of their depth with the task itself, can
-easily go back through the basics.
+easily go back through the basics.  By default, only the leaf
+questions (i.e. questions that are not dependencies of other question)
+are asked.  If the user gets one wrong, we push the question back on
+the stack (so they can try again later), and also push all of that
+questions direct dependencies onto the stack (so they can get the
+background they need to answer the question they got wrong).
+
+There are a number of example quizzes available in the ``quizzes``
+directory.  The example quizzes mostly focus on teaching software
+development tasks (POSIX shell utilities, Git version control, …), but
+any material that can be presented in a textual prompt/response/check
+process should be fairly easy to develop.  The quiz files are written
+in JSON, and the format should be fairly easy to understand after
+looking through the examples.
+
+The quiz framework and answer processing are independent of the user
+interface used to present the prompts and collect responses.
+Currently only a ``input()`` based command line interface exists, but
+other interfaces (e.g. a web server for browser-based interaction)
+should be fairly straightforward.
+
+Here's an example typescript for one of the sample quizzes::
+
+  $ ./pq.py quizzes/monty-python.json
+  What is your favourite color?
+  ? blue
+  correct
+
+  What is the capital of Assyria?
+  ? Hmm…
+  incorrect
+
+  What is your quest?
+  ? To seek the Holy Grail
+  correct
+
+  What is the capital of Assyria?
+  ? ?
+
+  What is the capital of Assyria?
+  Sir Robin didn't know it either
+  ? I don't know that
+  correct
+
+  results:
+  question:     What is your quest?
+  answers: 1/1 (1.00)
+    you answered: To seek the Holy Grail
+       which was: correct
+
+  question:     What is your favourite color?
+  answers: 1/1 (1.00)
+    you answered: blue
+       which was: correct
+
+  question:     What is the capital of Assyria?
+  answers: 1/2 (0.50)
+    you answered: Hmm…
+       which was: incorrect
+    you answered: I don't know that
+       which was: correct
+
+  answered 3 of 4 questions
+  of the answered questions, 3 (1.00) were answered correctly
+
+The unanswered question (“What is your name?”) wasn't asked because
+the user successfully answered the question that depended on it (“What
+is your quest?”).
 
 Quizzer requires Python ≥ 3.3.
