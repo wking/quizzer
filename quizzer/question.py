@@ -50,6 +50,26 @@ class NormalizedStringQuestion (Question):
         return self.normalize(answer) == self.normalize(self.answer)
 
 
+class ScriptQuestion (Question):
+    _state_attributes = Question._state_attributes + [
+        'interpreter',
+        'setup',
+        'teardown',
+        ]
+
+    def __setstate__(self, state):
+        if 'interpreter' not in state:
+            state['interpreter'] = 'sh'  # POSIX-compatible shell
+        for key in ['setup', 'teardown']:
+            if key not in state:
+                state[key] = []
+        super(ScriptQuestion, self).__setstate__(state)
+
+    def check(self, answer):
+        script = '\n'.join(self.setup + [answer] + self.teardown)
+        raise ValueError(script)
+
+
 for name,obj in list(locals().items()):
     if name.startswith('_'):
         continue
