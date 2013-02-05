@@ -9,17 +9,26 @@
 		{
 			"prompt": "What is your quest?",
 			"answer": "To seek the Holy Grail",
-			"hint": "Think like a Pythonista"
+			"hint": "Think like a Pythonista",
+			"dependencies": [
+				"What is your name?"
+				]
 		},
 		{
 			"prompt": "What is your favourite color?",
 			"answer": "Blue",
-			"hint": "Channel Sir Lancelot"
+			"hint": "Channel Sir Lancelot",
+			"dependencies": [
+				"What is your quest?"
+				]
 		},
 		{
 			"prompt": "What is the capital of Assyria?",
 			"answer": "I don't know that",
-			"hint": "Sir Robin didn't know it either"
+			"hint": "Sir Robin didn't know it either",
+			"dependencies": [
+				"What is your quest?"
+				]
 		}
 	]
 }
