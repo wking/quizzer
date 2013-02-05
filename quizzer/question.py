@@ -1,4 +1,5 @@
 import logging as _logging
+import os.path as _os_path
 import tempfile as _tempfile
 
 from . import error as _error
@@ -109,16 +110,20 @@ class ScriptQuestion (Question):
         return True
 
     def _invoke(self, answer):
-        with _tempfile.TemporaryDirectory(
-                prefix='{}-'.format(type(self).__name__),
-                ) as tempdir:
+        prefix = '{}-'.format(type(self).__name__)
+        with _tempfile.TemporaryDirectory(prefix=prefix) as tempdir:
             script = '\n'.join(self.setup + [answer] + self.teardown)
-            return _util.invoke(
+            status,stdout,stderr = _util.invoke(
                 args=[self.interpreter],
                 stdin=script,
                 cwd=tempdir,
                 universal_newlines=True,
-                timeout=self.timeout,)
+                timeout=self.timeout,
+                )
+            dirname = _os_path.basename(tempdir)
+        stdout = stdout.replace(dirname, '{}XXXXXX'.format(prefix))
+        stderr = stderr.replace(dirname, '{}XXXXXX'.format(prefix))
+        return status,stdout,stderr
 
 for name,obj in list(locals().items()):
     if name.startswith('_'):
