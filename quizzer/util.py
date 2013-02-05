@@ -1,3 +1,5 @@
+# Copyright
+
 import subprocess as _subprocess
 
 from . import error as _error

@@ -1,3 +1,5 @@
+# Copyright
+
 import logging as _logging
 import os.path as _os_path
 import tempfile as _tempfile

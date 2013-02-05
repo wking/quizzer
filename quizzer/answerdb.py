@@ -1,3 +1,5 @@
+# Copyright
+
 import codecs as _codecs
 import json as _json
 

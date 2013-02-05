@@ -1,3 +1,5 @@
+# Copyright
+
 from .. import answerdb as _answerdb
 
 

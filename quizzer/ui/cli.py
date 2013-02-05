@@ -1,3 +1,5 @@
+# Copyright
+
 try:
     import readline as _readline
 except ImportError as _readline_import_error:

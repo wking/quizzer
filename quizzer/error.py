@@ -1,3 +1,5 @@
+# Copyright
+
 class CommandError (RuntimeError):
     def __init__(self, arguments, stdin=None, stdout=None, stderr=None,
                  status=None, msg=None):
