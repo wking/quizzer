@@ -34,6 +34,7 @@ class AnswerDatabase (dict):
         with self._open(mode='w', **kwargs) as f:
             _json.dump(
                 data, f, indent=2, separators=(',', ': '), sort_keys=True)
+            f.write('\n')
 
     def add(self, question, answer, correct):
         if question.prompt not in self:

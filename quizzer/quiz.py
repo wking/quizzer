@@ -40,3 +40,4 @@ class Quiz (list):
         with self._open(mode='w', **kwargs) as f:
             _json.dump(
                 data, f, indent=2, separators=(',', ': '), sort_keys=True)
+            f.write('\n')
