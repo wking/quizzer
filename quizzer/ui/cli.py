@@ -30,6 +30,7 @@ class CommandLineInterface (UserInterface):
             if question in self.answers:
                 for answer in self.answers[question]:
                     self.display_result(question=question, answer=answer)
+        self.display_totals()
 
     def display_result(self, question, answer):
         if answer['correct']:
@@ -40,3 +41,12 @@ class CommandLineInterface (UserInterface):
         print('you answered: {}'.format(answer['answer']))
         print('which was:    {}'.format(correct))
         print()
+
+    def display_totals(self):
+        answered = self.get_answered()
+        correctly_answered = self.get_correctly_answered()
+        la = len(answered)
+        lc = len(correctly_answered)
+        print('answered {} of {} questions'.format(la, len(self.quiz)))
+        print(('of the answered questions, {} ({:.2f}) were answered correctly'
+               ).format(lc, float(lc)/la))
