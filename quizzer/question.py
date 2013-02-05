@@ -58,6 +58,11 @@ class NormalizedStringQuestion (Question):
         return self.normalize(answer) == self.normalize(self.answer)
 
 
+class ChoiceQuestion (Question):
+    def check(self, answer):
+        return answer in self.answer
+
+
 class ScriptQuestion (Question):
     _state_attributes = Question._state_attributes + [
         'interpreter',

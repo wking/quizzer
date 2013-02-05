@@ -2,8 +2,12 @@
 	"version": "0.1",
 	"questions": [
 		{
+			"class": "ChoiceQuestion",
 			"prompt": "What is your name?",
-			"answer": "",
+			"answer": [
+				"Sir Lancelot",
+				"Sir Robin"
+				],
 			"help": "This should be easy"
 		},
 		{
