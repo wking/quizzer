@@ -10,7 +10,8 @@ class UserInterface (object):
         raise NotImplementedError()
 
     def get_question(self):
-        return self.quiz[0]
+        remaining = [q for q in self.quiz if q not in self.answers]
+        return remaining[0]
 
     def process_answer(self, question, answer):
         if question not in self.answers:
