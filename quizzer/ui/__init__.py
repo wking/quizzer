@@ -20,7 +20,6 @@ class UserInterface (object):
 
     def get_question(self):
         if self.stack:
-            print(self.stack)
             return self.stack.pop(0)
 
     def process_answer(self, question, answer):
