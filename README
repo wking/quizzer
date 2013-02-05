@@ -3,3 +3,5 @@ Break learning up into small task-based tests for focused study.
 Tests can be defined with prerequites so a student wishing to learn a
 higher level task, but out of their depth with the task itself, can
 easily go back through the basics.
+
+Quizzer requires Python ≥ 3.3.
