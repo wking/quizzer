@@ -29,9 +29,8 @@ class CommandLineInterface (UserInterface):
     def display_results(self):
         print('results:')
         for question in self.quiz:
-            if question in self.answers:
-                for answer in self.answers[question]:
-                    self.display_result(question=question, answer=answer)
+            for answer in self.answers.get(question.prompt, []):
+                self.display_result(question=question, answer=answer)
         self.display_totals()
 
     def display_result(self, question, answer):
@@ -45,8 +44,9 @@ class CommandLineInterface (UserInterface):
         print()
 
     def display_totals(self):
-        answered = self.get_answered()
-        correctly_answered = self.get_correctly_answered()
+        answered = self.answers.get_answered(questions=self.quiz)
+        correctly_answered = self.answers.get_correctly_answered(
+            questions=self.quiz)
         la = len(answered)
         lc = len(correctly_answered)
         print('answered {} of {} questions'.format(la, len(self.quiz)))
