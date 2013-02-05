@@ -14,17 +14,8 @@ class Question (object):
         'dependencies',
         ]
 
-    def __init__(self, id=None, prompt=None, answer=None, help=None,
-                 dependencies=None):
-        if id is None:
-            id = prompt
-        self.id = id
-        self.prompt = prompt
-        self.answer = answer
-        self.help = help
-        if dependencies is None:
-            dependencies = []
-        self.dependencies = dependencies
+    def __init__(self, **kwargs):
+        self.__setstate__(kwargs)
 
     def __str__(self):
         return '<{} id:{!r}>'.format(type(self).__name__, self.id)
@@ -42,6 +33,9 @@ class Question (object):
             state['id'] = state.get('prompt', None)
         if 'dependencies' not in state:
             state['dependencies'] = []
+        for attr in self._state_attributes:
+            if attr not in state:
+                state[attr] = None
         self.__dict__.update(state)
 
     def check(self, answer):
