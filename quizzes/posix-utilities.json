@@ -1,0 +1,58 @@
+{
+	"version": "0.1",
+	"questions": [
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"prompt": "list all the files in the current directory",
+			"answer": "ls",
+			"setup": [
+				"touch file-1 file-2 file-3"
+				],
+			"help": "http://pubs.opengroup.org/onlinepubs/009696699/idx/utilities.html"
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"prompt": "print the current directory to stdout",
+			"answer": "pwd",
+			"help": "http://pubs.opengroup.org/onlinepubs/009696699/idx/utilities.html"
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"prompt": "change to your home directory",
+			"answer": "cd",
+			"teardown": [
+				"pwd"
+				],
+			"help": "http://pubs.opengroup.org/onlinepubs/009696699/idx/utilities.html"
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"prompt": "change to the parent of your current working directory",
+			"answer": "cd ..",
+			"teardown": [
+				"pwd"
+				],
+			"help": "http://pubs.opengroup.org/onlinepubs/009696699/idx/utilities.html",
+			"dependencies": [
+				"change to your home directory"
+				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"prompt": "print the contents of README file to the terminal",
+			"answer": "cat README",
+			"setup": [
+				"echo 'This project is wonderful' > README"
+				],
+			"help": "The README file is in your current directory.\nhttp://pubs.opengroup.org/onlinepubs/009696699/idx/utilities.html",
+			"dependencies": [
+				"list all the files in the current directory"
+				]
+		}
+	]
+}
