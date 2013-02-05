@@ -11,7 +11,8 @@ class UserInterface (object):
 
     def get_question(self):
         remaining = [q for q in self.quiz if q not in self.answers]
-        return remaining[0]
+        if remaining:
+            return remaining[0]
 
     def process_answer(self, question, answer):
         if question not in self.answers:
