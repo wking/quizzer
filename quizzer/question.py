@@ -6,6 +6,14 @@ def register_question(question_class):
 
 
 class Question (object):
+    _state_attributes = [
+        'id',
+        'prompt',
+        'answer',
+        'help',
+        'dependencies',
+        ]
+
     def __init__(self, id=None, prompt=None, answer=None, help=None,
                  dependencies=None):
         if id is None:
@@ -26,13 +34,8 @@ class Question (object):
             type(self).__name__, self.id, id(self))
 
     def __getstate__(self):
-        return {
-            'id': self.id,
-            'prompt': self.prompt,
-            'answer': self.answer,
-            'help': self.help,
-            'dependencies': self.dependencies,
-            }
+        return {attr: getattr(self, attr)
+                for attr in self._state_attributes} 
 
     def __setstate__(self, state):
         if 'id' not in state:
