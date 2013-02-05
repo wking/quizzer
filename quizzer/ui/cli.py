@@ -32,19 +32,24 @@ class CommandLineInterface (UserInterface):
     def display_results(self):
         print('results:')
         for question in self.quiz:
-            for answer in self.answers.get(question.id, []):
-                self.display_result(question=question, answer=answer)
+            if question.id in self.answers:
+                self.display_result(question=question)
+                print()
         self.display_totals()
 
-    def display_result(self, question, answer):
-        if answer['correct']:
-            correct = 'correct'
-        else:
-            correct = 'incorrect'
+    def display_result(self, question):
+        answers = self.answers.get(question.id, [])
         print('question:     {}'.format(question.prompt))
-        print('you answered: {}'.format(answer['answer']))
-        print('which was:    {}'.format(correct))
-        print()
+        la = len(answers)
+        lc = len([a for a in answers if a['correct']])
+        print('answers: {}/{} ({:.2f})'.format(lc, la, float(lc)/la))
+        for answer in answers:
+            if answer['correct']:
+                correct = 'correct'
+            else:
+                correct = 'incorrect'
+            print('  you answered: {}'.format(answer['answer']))
+            print('     which was: {}'.format(correct))
 
     def display_totals(self):
         answered = self.answers.get_answered(questions=self.quiz)
