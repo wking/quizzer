@@ -12,6 +12,7 @@ class CommandLineInterface (UserInterface):
                 answer = input('? ')
                 a = answer.strip().lower()
                 if a in ['q', 'quit']:
+                    print()
                     return
                 if a in ['?', 'help']:
                     print()
@@ -26,6 +27,7 @@ class CommandLineInterface (UserInterface):
                 print('incorrect\n')
 
     def display_results(self):
+        print('results:')
         for question in self.quiz:
             if question in self.answers:
                 for answer in self.answers[question]:
