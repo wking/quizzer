@@ -1,0 +1,33 @@
+{
+	"version": "0.1",
+	"questions": [
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git init",
+			"prompt": "initialize a Git repository in a new `my-project` directory",
+			"multiline": true,
+			"answer": [
+					"mkdir my-project",
+					"cd my-project",
+					"git init"
+					],
+			"teardown": [
+				"git status"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-init.html"
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git clone",
+			"prompt": "clone git://github.com/wking/quizzer.git into a new `quizzer` directory",
+			"answer": "git clone git://github.com/wking/quizzer.git",
+			"teardown": [
+				"cd quizzer",
+				"git status"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-clone.html"
+		}
+	]
+}
