@@ -11,6 +11,13 @@ class Question (object):
             dependencies = []
         self.dependencies = dependencies
 
+    def __str__(self):
+        return '<{} id:{!r}>'.format(type(self).__name__, self.id)
+
+    def __repr__(self):
+        return '<{} id:{!r} at {:#x}>'.format(
+            type(self).__name__, self.id, id(self))
+
     def __getstate__(self):
         return {
             'id': self.id,
