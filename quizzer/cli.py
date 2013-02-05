@@ -4,6 +4,7 @@ import locale as _locale
 from . import __doc__ as _module_doc
 from . import __version__
 from . import quiz as _quiz
+from .ui import cli as _cli
 
 
 def main():
@@ -21,5 +22,5 @@ def main():
 
     quiz = _quiz.Quiz(path=args.quiz, encoding=encoding)
     quiz.load()
-    for question in quiz:
-        print(question)
+    ui = _cli.CommandLineInterface(quiz=quiz)
+    ui.run()
