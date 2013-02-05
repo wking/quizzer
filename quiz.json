@@ -1,0 +1,25 @@
+{
+	"version": "0.1",
+	"questions": [
+		{
+			"prompt": "What is your name?",
+			"answer": "",
+			"hint": "This should be easy"
+		},
+		{
+			"prompt": "What is your quest?",
+			"answer": "To seek the Holy Grail",
+			"hint": "Think like a Pythonista"
+		},
+		{
+			"prompt": "What is your favourite color?",
+			"answer": "Blue",
+			"hint": "Channel Sir Lancelot"
+		},
+		{
+			"prompt": "What is the capital of Assyria?",
+			"answer": "I don't know that",
+			"hint": "Sir Robin didn't know it either"
+		}
+	]
+}

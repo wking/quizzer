@@ -1,4 +1,5 @@
 import argparse as _argparse
+import locale as _locale
 
 from . import __doc__ as _module_doc
 from . import __version__
@@ -6,6 +7,8 @@ from . import quiz as _quiz
 
 
 def main():
+    encoding = _locale.getpreferredencoding(do_setlocale=True)
+
     parser = _argparse.ArgumentParser(description=_module_doc)
     parser.add_argument(
         '--version', action='version',
@@ -16,7 +19,7 @@ def main():
 
     args = parser.parse_args()
 
-    quiz = Quiz()
-    quiz.load(args.quiz)
+    quiz = _quiz.Quiz(path=args.quiz, encoding=encoding)
+    quiz.load()
     for question in quiz:
         print(question)
