@@ -29,7 +29,7 @@ class CommandLineInterface (UserInterface):
     def display_results(self):
         print('results:')
         for question in self.quiz:
-            for answer in self.answers.get(question.prompt, []):
+            for answer in self.answers.get(question.id, []):
                 self.display_result(question=question, answer=answer)
         self.display_totals()
 

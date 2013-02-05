@@ -37,23 +37,23 @@ class AnswerDatabase (dict):
             f.write('\n')
 
     def add(self, question, answer, correct):
-        if question.prompt not in self:
-            self[question.prompt] = []
-        self[question.prompt].append({
+        if question.id not in self:
+            self[question.id] = []
+        self[question.id].append({
                 'answer': answer,
                 'correct': correct,
                 })
 
     def get_answered(self, questions):
-        return [q for q in questions if q.prompt in self]
+        return [q for q in questions if q.id in self]
 
     def get_unanswered(self, questions):
-        return [q for q in questions if q.prompt not in self]
+        return [q for q in questions if q.id not in self]
 
     def get_correctly_answered(self, questions):
         return [q for q in questions
-                if True in [a['correct'] for a in self.get(q.prompt, [])]]
+                if True in [a['correct'] for a in self.get(q.id, [])]]
 
     def get_never_correctly_answered(self, questions):
         return [q for q in questions
-                if True not in [a['correct'] for a in self.get(q.prompt, [])]]
+                if True not in [a['correct'] for a in self.get(q.id, [])]]
