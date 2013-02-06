@@ -35,6 +35,10 @@ def main():
         '-a', '--answers', metavar='ANSWERS', default='answers.json',
         help='path to an answers database')
     parser.add_argument(
+        '--all', action='store_const', const=True, default=False,
+        help=('ask all questions '
+              '(not just never-correctly-answered leaf questions)'))
+    parser.add_argument(
         'quiz', metavar='QUIZ',
         help='path to a quiz file')
 
@@ -47,7 +51,10 @@ def main():
         answers.load()
     except IOError:
         pass
-    ui = _cli.CommandLineInterface(quiz=quiz, answers=answers)
+    stack = None
+    if args.all:
+        stack = [question for question in quiz]
+    ui = _cli.CommandLineInterface(quiz=quiz, answers=answers, stack=stack)
     ui.run()
     ui.answers.save()
     ui.display_results()
