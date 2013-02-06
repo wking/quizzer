@@ -108,6 +108,37 @@
 				"cat README"
 				],
 			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-checkout.html"
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git commit --amend",
+			"prompt": "you messed up your README file in your last commit.\nyou just fixed the contents of `README`, but haven't added it to the index.\ncommit the new version so it also fixes the last commit.\nthe fixed commit message should be `Add a README`.",
+			"multiline": true,
+			"timeout": null,
+			"answer": [
+				"git commit --amend -am 'Add a README'"
+				],
+			"setup": [
+				"export GIT_AUTHOR_NAME='A U Thor'",
+				"export GIT_AUTHOR_EMAIL=author@example.com",
+				"export GIT_COMMITTER_NAME='C O Mitter'",
+				"export GIT_COMMITTER_EMAIL=committer@example.com",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"git init",
+				"echo 'This project is terrible' > README",
+				"git add README",
+				"git commit -am 'Add a README'",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:01:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"echo 'This project is wonderful' > README"
+				],
+			"teardown": [
+				"git log -p",
+				"git status"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-commit.html"
 		}
 	]
 }
