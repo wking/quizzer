@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # quizzer.  If not, see <http://www.gnu.org/licenses/>.
 
+import cmd as _cmd
 try:
     import readline as _readline
 except ImportError as _readline_import_error:
@@ -22,42 +23,77 @@ except ImportError as _readline_import_error:
 from . import UserInterface
 
 
+class QuestionCommandLine (_cmd.Cmd):
+    _help = [
+        'Type help or ? to list commands.',
+        'Non-commands will be interpreted as answers.',
+        'Use a blank line to terminate multi-line answers.',
+        ]
+    intro = '\n'.join(['Welcome to the quizzer shell.'] + _help)
+    _prompt = 'quizzer? '
+
+    def __init__(self, ui):
+        super(QuestionCommandLine, self).__init__()
+        self.ui = ui
+
+    def preloop(self):
+        self.question = self.ui.get_question()
+        self._reset()
+
+    def _reset(self):
+        self.answers = []
+        self._set_ps1()
+
+    def _set_ps1(self):
+        "Pose a question and prompt"
+        self.prompt = '\n{}\n{}'.format(
+            self.question.format_prompt(), self._prompt)
+
+    def _set_ps2(self):
+        "Just prompt (without the question, e.g. for multi-line answers)"
+        self.prompt = self._prompt
+
+    def default(self, line):
+        self.answers.append(line)
+        if self.question.multiline:
+            self._set_ps2()
+        else:
+            self._answer()
+
+    def emptyline(self):
+        self._answer()
+
+    def _answer(self):
+        if self.question.multiline:
+            answer = self.answers
+        else:
+            answer = self.answers.get(0, '')
+        correct = self.ui.process_answer(question=self.question, answer=answer)
+        if correct:
+            print('correct\n')
+        else:
+            print('incorrect\n')
+        self.question = self.ui.get_question()
+        if not self.question:
+            return True  # out of questions
+        self._reset()
+
+    def do_quit(self, arg):
+        "Stop taking the quiz"
+        self._reset()
+        return True
+
+    def do_hint(self, arg):
+        "Show a hint for the current question"
+        self._reset()
+        print(self.question.format_help())
+
+
 class CommandLineInterface (UserInterface):
     def run(self):
-        while True:
-            question = self.get_question()
-            if not question:
-                break
-            print(question.format_prompt())
-            if question.multiline:
-                answers = []
-            while True:
-                try:
-                    answer = input('? ')
-                except EOFError:
-                    answer = 'quit'
-                a = answer.strip().lower()
-                if a in ['q', 'quit']:
-                    print()
-                    return
-                if a in ['?', 'help']:
-                    print()
-                    print(question.format_prompt())
-                    print(question.format_help())
-                    continue
-                if question.multiline:
-                    answers.append(answer)
-                    if not a:
-                        break
-                else:
-                    break
-            if question.multiline:
-                answer = answers
-            correct = self.process_answer(question=question, answer=answer)
-            if correct:
-                print('correct\n')
-            else:
-                print('incorrect\n')
+        cmd = QuestionCommandLine(ui=self)
+        cmd.cmdloop()
+        print()
 
     def display_results(self):
         print('results:')
