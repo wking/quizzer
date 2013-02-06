@@ -93,7 +93,7 @@
 			"timeout": null,
 			"answer": [
 				"git add README",
-				"git commit -m \"Add a README\""
+				"git commit -m 'Add a README'"
 				],
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
