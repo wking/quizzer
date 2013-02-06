@@ -132,7 +132,7 @@ class ScriptQuestion (Question):
         prefix = '{}-'.format(type(self).__name__)
         if not self.multiline:
             answer = [answer]
-        script = '\n'.join(self.setup + answer + self.teardown)
+        script = '\n'.join(self.setup + answer + self.teardown + [''])
         with _tempfile.NamedTemporaryFile(
                 mode='w', prefix='{}script-'.format(prefix)) as tempscript:
             tempscript.write(script)
