@@ -55,6 +55,31 @@
 				"git status"
 				],
 			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-add.html\nhttp://www.kernel.org/pub/software/scm/git/docs/git-commit.html"
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git checkout HEAD -- FILE",
+			"prompt": "you've messed up your README file.\nrestore it to the last committed version",
+			"answer": "git checkout HEAD -- README",
+			"setup": [
+				"export GIT_AUTHOR_NAME='A U Thor'",
+				"export GIT_AUTHOR_EMAIL=author@example.com",
+				"export GIT_COMMITTER_NAME='C O Mitter'",
+				"export GIT_COMMITTER_EMAIL=committer@example.com",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"git init",
+				"echo 'This project is wonderful' > README",
+				"git add README",
+				"git commit -am 'Add a README'",
+				"echo 'This project is terrible' > README"
+				],
+			"teardown": [
+				"git status",
+				"cat README"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-checkout.html"
 		}
 	]
 }
