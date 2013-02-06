@@ -13,7 +13,10 @@
 			"teardown": [
 				"cat .gitconfig"
 				],
-			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-config.html"
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-config.html",
+			"tags": [
+				"config"
+				]
 		},
 		{
 			"class": "ScriptQuestion",
@@ -27,7 +30,10 @@
 			"teardown": [
 				"cat .gitconfig"
 				],
-			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-config.html"
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-config.html",
+			"tags": [
+				"config"
+				]
 		},
 		{
 			"class": "ScriptQuestion",
@@ -43,7 +49,10 @@
 			"teardown": [
 				"git status"
 				],
-			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-init.html"
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-init.html",
+			"tags": [
+				"init"
+				]
 		},
 		{
 			"class": "ScriptQuestion",
@@ -55,7 +64,10 @@
 				"cd quizzer",
 				"git status"
 				],
-			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-clone.html"
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-clone.html",
+			"tags": [
+				"init"
+				]
 		},
 		{
 			"class": "ScriptQuestion",
@@ -82,7 +94,11 @@
 				"git ls-files",
 				"git status"
 				],
-			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-add.html\nhttp://www.kernel.org/pub/software/scm/git/docs/git-commit.html"
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-add.html\nhttp://www.kernel.org/pub/software/scm/git/docs/git-commit.html",
+			"tags": [
+				"add",
+				"commit"
+				]
 		},
 		{
 			"class": "ScriptQuestion",
@@ -107,7 +123,10 @@
 				"git status",
 				"cat README"
 				],
-			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-checkout.html"
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-checkout.html",
+			"tags": [
+				"checkout"
+				]
 		},
 		{
 			"class": "ScriptQuestion",
@@ -138,7 +157,11 @@
 				"git log -p",
 				"git status"
 				],
-			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-commit.html"
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-commit.html",
+			"tags": [
+				"commit",
+				"rewrite"
+				]
 		}
 	]
 }
