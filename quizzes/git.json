@@ -5,7 +5,7 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "git config --global user.name",
-			"prompt": "configure your user-wide name to be `A U Thor`",
+			"prompt": "Configure your user-wide name to be `A U Thor`.",
 			"answer": "git config --global user.name 'A U Thor'",
 			"setup": [
 					"export HOME=."
@@ -22,7 +22,7 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "git config --global user.email",
-			"prompt": "configure your user-wide email to be `author@example.com`",
+			"prompt": "Configure your user-wide email to be `author@example.com`.",
 			"answer": "git config --global user.email 'author@example.com'",
 			"setup": [
 					"export HOME=."
@@ -39,7 +39,7 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "git init",
-			"prompt": "initialize a Git repository in a new `my-project` directory",
+			"prompt": "Initialize a Git repository in a new `my-project` directory.",
 			"multiline": true,
 			"answer": [
 					"mkdir my-project",
@@ -58,7 +58,7 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "git clone",
-			"prompt": "clone git://github.com/wking/quizzer.git into a new `quizzer` directory",
+			"prompt": "Clone git://github.com/wking/quizzer.git into a new `quizzer` directory.",
 			"answer": "git clone git://github.com/wking/quizzer.git",
 			"teardown": [
 				"cd quizzer",
@@ -73,7 +73,7 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "git add / commit",
-			"prompt": "there is a new README file in your repository.\nmake a new commit including this README.\nthe commit message should be `Add a README`",
+			"prompt": "There is a new README file in your repository.\nMake a new commit including this README.\nThe commit message should be `Add a README`.",
 			"multiline": true,
 			"timeout": null,
 			"answer": [
@@ -104,7 +104,7 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "git checkout HEAD -- FILE",
-			"prompt": "you've messed up your README file.\nrestore it to the last committed version",
+			"prompt": "You've messed up your README file.\nRestore it to the last committed version.",
 			"answer": "git checkout HEAD -- README",
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
@@ -132,7 +132,7 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "git commit --amend",
-			"prompt": "you messed up your README file in your last commit.\nyou just fixed the contents of `README`, but haven't added it to the index.\ncommit the new version so it also fixes the last commit.\nthe fixed commit message should be `Add a README`.",
+			"prompt": "You messed up your README file in your last commit.\nYou just fixed the contents of `README`, but haven't added it to the index.\nCommit the new version so it also fixes the last commit.\nThe fixed commit message should be `Add a README`.",
 			"multiline": true,
 			"timeout": null,
 			"answer": [

@@ -4,7 +4,7 @@
 		{
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
-			"prompt": "list all the files in the current directory",
+			"prompt": "List all the files in the current directory.",
 			"answer": "ls",
 			"setup": [
 				"touch file-1 file-2 file-3"
@@ -14,14 +14,14 @@
 		{
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
-			"prompt": "print the current directory to stdout",
+			"prompt": "Print the current directory to stdout.",
 			"answer": "pwd",
 			"help": "http://pubs.opengroup.org/onlinepubs/009696699/idx/utilities.html"
 		},
 		{
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
-			"prompt": "change to your home directory",
+			"prompt": "Change to your home directory.",
 			"answer": "cd",
 			"teardown": [
 				"pwd"
@@ -31,7 +31,7 @@
 		{
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
-			"prompt": "change to the parent of your current working directory",
+			"prompt": "Change to the parent of your current working directory.",
 			"answer": "cd ..",
 			"teardown": [
 				"pwd"
@@ -44,7 +44,7 @@
 		{
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
-			"prompt": "print the contents of README file to the terminal",
+			"prompt": "Print the contents of README file to the terminal.",
 			"answer": "cat README",
 			"setup": [
 				"echo 'This project is wonderful' > README"

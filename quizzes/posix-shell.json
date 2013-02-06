@@ -5,7 +5,7 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "quoting spaces",
-			"prompt": "call `ls` and pass it two arguments: `a` and `b c`",
+			"prompt": "Call `ls` and pass it two arguments: `a` and `b c`.",
 			"answer": "ls a 'b c'",
 			"help": "http://pubs.opengroup.org/onlinepubs/009696699/utilities/xcu_chap02.html#tag_02_02"
 		},
@@ -13,7 +13,7 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "echo constant",
-			"prompt": "print the string `hello, world` to stdout",
+			"prompt": "Print the string `hello, world` to stdout.",
 			"answer": "echo 'hello, world'",
 			"help": "http://pubs.opengroup.org/onlinepubs/009696699/utilities/echo.html"
 		},
@@ -21,7 +21,7 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "parameter expansion",
-			"prompt": "print the contents of the PATH variable to stdout",
+			"prompt": "Print the contents of the PATH variable to stdout.",
 			"answer": "echo \"$PATH\"",
 			"help": "http://pubs.opengroup.org/onlinepubs/009696699/utilities/xcu_chap02.html#tag_02_06_02",
 			"dependencies": [
@@ -32,7 +32,7 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "variable assign constant",
-			"prompt": "set the ABC variable to the string `xyz`",
+			"prompt": "Set the ABC variable to the string `xyz`.",
 			"answer": "ABC='xyz'",
 			"teardown": [
 				"echo \"ABC: '${ABC}'\""
@@ -42,7 +42,7 @@
 		{
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
-			"prompt": "prepend the string `/some/path:` to the PATH variable",
+			"prompt": "Prepend the string `/some/path:` to the PATH variable.",
 			"answer": "PATH=\"/some/path:$PATH\"",
 			"teardown": [
 				"echo \"PATH: '${PATH}'\""
