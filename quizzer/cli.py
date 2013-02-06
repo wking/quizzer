@@ -77,7 +77,7 @@ def main():
     if args.questions:
         for i,q in enumerate(stack):
             print('Question {}:'.format(i))
-            print(q.prompt)
+            print(q.format_prompt())
             print()
         return
     ui = _cli.CommandLineInterface(quiz=quiz, answers=answers, stack=stack)

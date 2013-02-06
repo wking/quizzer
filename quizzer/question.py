@@ -74,6 +74,11 @@ class Question (object):
     def check(self, answer):
         return answer == self.answer
 
+    def format_prompt(self, newline='\n'):
+        if isinstance(self.prompt, str):
+            return self.prompt
+        return newline.join(self.prompt)
+
 
 class NormalizedStringQuestion (Question):
     def normalize(self, string):

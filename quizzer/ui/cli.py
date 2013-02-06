@@ -28,7 +28,7 @@ class CommandLineInterface (UserInterface):
             question = self.get_question()
             if not question:
                 break
-            print(question.prompt)
+            print(question.format_prompt())
             if question.multiline:
                 answers = []
             while True:
@@ -42,7 +42,7 @@ class CommandLineInterface (UserInterface):
                     return
                 if a in ['?', 'help']:
                     print()
-                    print(question.prompt)
+                    print(question.format_prompt())
                     print(question.help)
                     continue
                 if question.multiline:
@@ -69,7 +69,8 @@ class CommandLineInterface (UserInterface):
 
     def display_result(self, question):
         answers = self.answers.get(question.id, [])
-        print('question:     {}'.format(question.prompt))
+        print('question:')
+        print('  {}'.format(question.format_prompt(newline='\n  ')))
         la = len(answers)
         lc = len([a for a in answers if a['correct']])
         print('answers: {}/{} ({:.2f})'.format(lc, la, float(lc)/la))
