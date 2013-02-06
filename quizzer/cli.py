@@ -42,6 +42,9 @@ def main():
         '-t', '--tag', action='append',
         help='limit original questions to those matching at least one tag')
     parser.add_argument(
+        '--tags', action='store_const', const=True, default=False,
+        help='instead of running the quiz, print a list of tags on the stack')
+    parser.add_argument(
         'quiz', metavar='QUIZ',
         help='path to a quiz file')
 
@@ -60,6 +63,13 @@ def main():
         stack = [question for question in quiz]
     if args.tag:
         stack = [q for q in stack if q.tags.intersection(args.tag)]
+    if args.tags:
+        tags = set()
+        for q in stack:
+            tags.update(q.tags)
+        for tag in sorted(tags):
+            print(tag)
+        return
     ui = _cli.CommandLineInterface(quiz=quiz, answers=answers, stack=stack)
     ui.run()
     ui.answers.save()
