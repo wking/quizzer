@@ -43,7 +43,7 @@ class CommandLineInterface (UserInterface):
                 if a in ['?', 'help']:
                     print()
                     print(question.format_prompt())
-                    print(question.help)
+                    print(question.format_help())
                     continue
                 if question.multiline:
                     answers.append(answer)
