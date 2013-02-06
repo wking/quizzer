@@ -3,6 +3,17 @@
 	"questions": [
 		{
 			"class": "ScriptQuestion",
+			"intepreter": "sh",
+			"id": "git help config",
+			"prompt": "Get help for Git's `config` command",
+			"answer": "git help config",
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-help.html",
+			"tags": [
+				"help"
+				]
+		},
+		{
+			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "git config --global user.name",
 			"prompt": "Configure your user-wide name to be `A U Thor`.",
