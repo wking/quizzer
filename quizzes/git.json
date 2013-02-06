@@ -4,6 +4,34 @@
 		{
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
+			"id": "git config --global user.name",
+			"prompt": "configure your user-wide name to be `A U Thor`",
+			"answer": "git config --global user.name 'A U Thor'",
+			"setup": [
+					"export HOME=."
+					],
+			"teardown": [
+				"cat .gitconfig"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-config.html"
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git config --global user.email",
+			"prompt": "configure your user-wide email to be `author@example.com`",
+			"answer": "git config --global user.email 'author@example.com'",
+			"setup": [
+					"export HOME=."
+					],
+			"teardown": [
+				"cat .gitconfig"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-config.html"
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
 			"id": "git init",
 			"prompt": "initialize a Git repository in a new `my-project` directory",
 			"multiline": true,
