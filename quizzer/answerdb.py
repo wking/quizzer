@@ -15,6 +15,7 @@
 # quizzer.  If not, see <http://www.gnu.org/licenses/>.
 
 import codecs as _codecs
+import datetime as _datetime
 import json as _json
 
 from . import __version__
@@ -55,9 +56,12 @@ class AnswerDatabase (dict):
     def add(self, question, answer, correct):
         if question.id not in self:
             self[question.id] = []
+        timezone = _datetime.timezone.utc
+        timestamp = _datetime.datetime.now(tz=timezone).isoformat()
         self[question.id].append({
                 'answer': answer,
                 'correct': correct,
+                'timestamp': timestamp,
                 })
 
     def get_answered(self, questions):
