@@ -177,6 +177,127 @@
 		{
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
+			"id": "git diff",
+			"prompt": [
+				"You've edited a few files since the last commit.",
+				"Ask Git to display the changes you've make (but not staged)."
+				],
+			"answer": "git diff",
+			"setup": [
+				"export GIT_AUTHOR_NAME='A U Thor'",
+				"export GIT_AUTHOR_EMAIL=author@example.com",
+				"export GIT_COMMITTER_NAME='C O Mitter'",
+				"export GIT_COMMITTER_EMAIL=committer@example.com",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"git init",
+				"echo 'This project is wonderful' > README",
+				"echo 'Lots of widgets' > widgets",
+				"git add README widgets",
+				"git commit -m 'Add some widgets'",
+				"echo 'Take a look in the widgets file.' >> README",
+				"echo 'Widget-1 should be blue' >> widgets"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-diff.html",
+			"tags": [
+				"query"
+				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git diff HEAD --",
+			"prompt": [
+				"You've edited a few files since the last commit.",
+				"Ask Git to display the changes you've make since the last commit,",
+				"including any changes that you may have already staged."
+				],
+			"answer": "git diff HEAD --",
+			"setup": [
+				"export GIT_AUTHOR_NAME='A U Thor'",
+				"export GIT_AUTHOR_EMAIL=author@example.com",
+				"export GIT_COMMITTER_NAME='C O Mitter'",
+				"export GIT_COMMITTER_EMAIL=committer@example.com",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"git init",
+				"echo 'This project is wonderful' > README",
+				"echo 'Lots of widgets' > widgets",
+				"git add README widgets",
+				"git commit -m 'Add some widgets'",
+				"echo 'Take a look in the widgets file.' >> README",
+				"echo 'Widget-1 should be blue' >> widgets",
+				"git add README"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-diff.html",
+			"tags": [
+				"query"
+				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git diff HEAD -- README",
+			"prompt": [
+				"You've edited a few files since the last commit.",
+				"Ask Git to display the changes you've make to README since the last commit,",
+				"including any changes that you may have already staged."
+				],
+			"answer": "git diff HEAD -- README",
+			"setup": [
+				"export GIT_AUTHOR_NAME='A U Thor'",
+				"export GIT_AUTHOR_EMAIL=author@example.com",
+				"export GIT_COMMITTER_NAME='C O Mitter'",
+				"export GIT_COMMITTER_EMAIL=committer@example.com",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"git init",
+				"echo 'This project is wonderful' > README",
+				"echo 'Lots of widgets' > widgets",
+				"git add README widgets",
+				"git commit -m 'Add some widgets'",
+				"echo 'Take a look in the widgets file.' >> README",
+				"echo 'Widget-1 should be blue' >> widgets",
+				"git add README"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-diff.html",
+			"tags": [
+				"query"
+				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git diff --cached",
+			"prompt": [
+				"You've edited a few files since the last commit, and staged some of them.",
+				"Ask Git to display only the changes you've staged."
+				],
+			"answer": "git diff --cached",
+			"setup": [
+				"export GIT_AUTHOR_NAME='A U Thor'",
+				"export GIT_AUTHOR_EMAIL=author@example.com",
+				"export GIT_COMMITTER_NAME='C O Mitter'",
+				"export GIT_COMMITTER_EMAIL=committer@example.com",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"git init",
+				"echo 'This project is wonderful' > README",
+				"echo 'Lots of widgets' > widgets",
+				"git add README widgets",
+				"git commit -m 'Add some widgets'",
+				"echo 'Take a look in the widgets file.' >> README",
+				"echo 'Widget-1 should be blue' >> widgets",
+				"git add README"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-diff.html",
+			"tags": [
+				"query"
+				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
 			"id": "git checkout HEAD -- FILE",
 			"prompt": [
 				"You've messed up your README file.",
