@@ -98,7 +98,10 @@
 				"git ls-files",
 				"git status"
 				],
-			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-add.html\nhttp://www.kernel.org/pub/software/scm/git/docs/git-commit.html",
+			"help": [
+				"http://www.kernel.org/pub/software/scm/git/docs/git-add.html",
+				"http://www.kernel.org/pub/software/scm/git/docs/git-commit.html"
+				],
 			"tags": [
 				"add",
 				"commit"

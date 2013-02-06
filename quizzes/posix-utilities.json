@@ -49,7 +49,10 @@
 			"setup": [
 				"echo 'This project is wonderful' > README"
 				],
-			"help": "The README file is in your current directory.\nhttp://pubs.opengroup.org/onlinepubs/009696699/idx/utilities.html",
+			"help": [
+				"The README file is in your current directory.",
+				"http://pubs.opengroup.org/onlinepubs/009696699/idx/utilities.html"
+				],
 			"dependencies": [
 				"list all the files in the current directory"
 				]
