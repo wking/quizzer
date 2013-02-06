@@ -78,6 +78,16 @@ class QuestionCommandLine (_cmd.Cmd):
             return True  # out of questions
         self._reset()
 
+    def do_answer(self, arg):
+        """Explicitly add a line to your answer
+
+        This is useful if the line you'd like to add starts with a
+        quizzer-shell command.  For example:
+
+          quizzer? answer help=5
+        """
+        return self.default(arg)
+
     def do_quit(self, arg):
         "Stop taking the quiz"
         self._reset()
