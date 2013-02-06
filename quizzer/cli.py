@@ -45,6 +45,10 @@ def main():
         '--tags', action='store_const', const=True, default=False,
         help='instead of running the quiz, print a list of tags on the stack')
     parser.add_argument(
+        '--questions', action='store_const', const=True, default=False,
+        help=('instead of running the quiz, '
+              'print a list of questions on the stack'))
+    parser.add_argument(
         'quiz', metavar='QUIZ',
         help='path to a quiz file')
 
@@ -69,6 +73,12 @@ def main():
             tags.update(q.tags)
         for tag in sorted(tags):
             print(tag)
+        return
+    if args.questions:
+        for i,q in enumerate(stack):
+            print('Question {}:'.format(i))
+            print(q.prompt)
+            print()
         return
     ui = _cli.CommandLineInterface(quiz=quiz, answers=answers, stack=stack)
     ui.run()
