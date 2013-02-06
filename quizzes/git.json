@@ -188,6 +188,24 @@
 				"commit",
 				"rewrite"
 				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "gitignore",
+			"prompt": "Tell git to ignore files ending with `~`.",
+			"answer": "echo '*~' > .gitignore",
+			"setup": [
+					"git init"
+					],
+			"teardown": [
+				"touch some-file~",
+				"git status | grep some-file"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/gitignore.html",
+			"tags": [
+				"config"
+				]
 		}
 	]
 }
