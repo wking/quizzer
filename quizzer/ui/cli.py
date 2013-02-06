@@ -66,8 +66,10 @@ class QuestionCommandLine (_cmd.Cmd):
     def _answer(self):
         if self.question.multiline:
             answer = self.answers
+        elif self.answers:
+            answer = self.answers[0]
         else:
-            answer = self.answers.get(0, '')
+            answer = ''
         correct = self.ui.process_answer(question=self.question, answer=answer)
         if correct:
             print('correct\n')
