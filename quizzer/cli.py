@@ -42,6 +42,9 @@ def main():
         '-t', '--tag', action='append',
         help='limit original questions to those matching at least one tag')
     parser.add_argument(
+        '-s', '--select', action='append', type=int,
+        help='select questions from the original stack by index')
+    parser.add_argument(
         '--tags', action='store_const', const=True, default=False,
         help='instead of running the quiz, print a list of tags on the stack')
     parser.add_argument(
@@ -74,6 +77,8 @@ def main():
         for tag in sorted(tags):
             print(tag)
         return
+    if args.select:
+        stack = [stack[i] for i in args.select]
     if args.questions:
         for i,q in enumerate(stack):
             print('Question {}:'.format(i))
