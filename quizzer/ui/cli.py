@@ -46,8 +46,11 @@ class QuestionCommandLine (_cmd.Cmd):
 
     def _set_ps1(self):
         "Pose a question and prompt"
-        self.prompt = '\n{}\n{}'.format(
-            self.question.format_prompt(), self._prompt)
+        if self.question:
+            self.prompt = '\n{}\n{}'.format(
+                self.question.format_prompt(), self._prompt)
+        else:
+            self.prompt = self._prompt
 
     def _set_ps2(self):
         "Just prompt (without the question, e.g. for multi-line answers)"
