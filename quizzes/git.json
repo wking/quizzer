@@ -28,6 +28,33 @@
 				"git status"
 				],
 			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-clone.html"
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git add / commit",
+			"prompt": "there is a new README file in your repository.\nmake a new commit including this README.\nthe commit message should be `Add a README`",
+			"multiline": true,
+			"timeout": null,
+			"answer": [
+				"git add README",
+				"git commit -m \"Add a README\""
+				],
+			"setup": [
+				"export GIT_AUTHOR_NAME='A U Thor'",
+				"export GIT_AUTHOR_EMAIL=author@example.com",
+				"export GIT_COMMITTER_NAME='C O Mitter'",
+				"export GIT_COMMITTER_EMAIL=committer@example.com",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"git init",
+				"echo 'This project is wonderful' > README"
+				],
+			"teardown": [
+				"git ls-files",
+				"git status"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-add.html\nhttp://www.kernel.org/pub/software/scm/git/docs/git-commit.html"
 		}
 	]
 }
