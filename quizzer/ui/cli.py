@@ -61,10 +61,10 @@ class QuestionCommandLine (_cmd.Cmd):
         if self.question.multiline:
             self._set_ps2()
         else:
-            self._answer()
+            return self._answer()
 
     def emptyline(self):
-        self._answer()
+        return self._answer()
 
     def _answer(self):
         if self.question.multiline:
