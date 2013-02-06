@@ -121,6 +121,26 @@
 		{
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
+			"id": "git status",
+			"prompt": [
+				"You don't remember if you've staged README to be committed.",
+				"How would you check?"
+				],
+			"answer": "git status",
+			"setup": [
+				"git init",
+				"echo 'This project is wonderful' > README",
+				"git add README"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-status.html",
+			"tags": [
+				"add",
+				"query"
+				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
 			"id": "git checkout HEAD -- FILE",
 			"prompt": [
 				"You've messed up your README file.",
