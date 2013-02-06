@@ -112,6 +112,8 @@ class QuestionCommandLine (_cmd.Cmd):
 
 class CommandLineInterface (UserInterface):
     def run(self):
+        if not self.stack:
+            return
         cmd = QuestionCommandLine(ui=self)
         cmd.cmdloop()
         print()
