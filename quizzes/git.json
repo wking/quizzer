@@ -177,6 +177,48 @@
 		{
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
+			"id": "git rm / commit",
+			"prompt": [
+				"You've had a `widgets` file in repository for a few commits,",
+				"but you don't need it any more.",
+				"Create a commit removing the file.",
+				"The commit message should be `Remove 'widgets'`."
+				],
+			"multiline": true,
+			"timeout": null,
+			"answer": [
+				"git rm widgets",
+				"git commit -am \"Remove 'widgets'\""
+				],
+			"setup": [
+				"export GIT_AUTHOR_NAME='A U Thor'",
+				"export GIT_AUTHOR_EMAIL=author@example.com",
+				"export GIT_COMMITTER_NAME='C O Mitter'",
+				"export GIT_COMMITTER_EMAIL=committer@example.com",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"git init",
+				"echo 'Lots of widgets' > widgets",
+				"git add widgets",
+				"git commit -m 'Add some widgets'",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:01:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\""
+				],
+			"teardown": [
+				"git log -p"
+				],
+			"help": [
+				"http://www.kernel.org/pub/software/scm/git/docs/git-rm.html",
+				"http://www.kernel.org/pub/software/scm/git/docs/git-commit.html"
+				],
+			"tags": [
+				"remove",
+				"commit"
+				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
 			"id": "git diff",
 			"prompt": [
 				"You've edited a few files since the last commit.",
