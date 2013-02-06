@@ -88,6 +88,12 @@ class QuestionCommandLine (_cmd.Cmd):
         self._reset()
         print(self.question.format_help())
 
+    def do_help(self, arg):
+        'List available commands with "help" or detailed help with "help cmd"'
+        if not arg:
+            print('\n'.join(self._help))
+        super(QuestionCommandLine, self).do_help(arg)
+
 
 class CommandLineInterface (UserInterface):
     def run(self):
