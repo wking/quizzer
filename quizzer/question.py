@@ -38,6 +38,7 @@ class Question (object):
         'multiline',
         'help',
         'dependencies',
+        'tags',
         ]
 
     def __init__(self, **kwargs):
@@ -61,6 +62,10 @@ class Question (object):
             state['multiline'] = False
         if 'dependencies' not in state:
             state['dependencies'] = []
+        if 'tags' not in state:
+            state['tags'] = set()
+        else:
+            state['tags'] = set(state['tags'])
         for attr in self._state_attributes:
             if attr not in state:
                 state[attr] = None

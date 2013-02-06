@@ -39,6 +39,9 @@ def main():
         help=('ask all questions '
               '(not just never-correctly-answered leaf questions)'))
     parser.add_argument(
+        '-t', '--tag', action='append',
+        help='limit original questions to those matching at least one tag')
+    parser.add_argument(
         'quiz', metavar='QUIZ',
         help='path to a quiz file')
 
@@ -51,9 +54,12 @@ def main():
         answers.load()
     except IOError:
         pass
-    stack = None
+    stack = answers.get_never_correctly_answered(
+        questions=quiz.leaf_questions())
     if args.all:
         stack = [question for question in quiz]
+    if args.tag:
+        stack = [q for q in stack if q.tags.intersection(args.tag)]
     ui = _cli.CommandLineInterface(quiz=quiz, answers=answers, stack=stack)
     ui.run()
     ui.answers.save()
