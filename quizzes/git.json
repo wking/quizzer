@@ -73,7 +73,11 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "git add / commit",
-			"prompt": "There is a new README file in your repository.\nMake a new commit including this README.\nThe commit message should be `Add a README`.",
+			"prompt": [
+				"There is a new README file in your repository.",
+				"Make a new commit including this README.",
+				"The commit message should be `Add a README`."
+				],
 			"multiline": true,
 			"timeout": null,
 			"answer": [
@@ -104,7 +108,10 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "git checkout HEAD -- FILE",
-			"prompt": "You've messed up your README file.\nRestore it to the last committed version.",
+			"prompt": [
+				"You've messed up your README file.",
+				"Restore it to the last committed version."
+				],
 			"answer": "git checkout HEAD -- README",
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
@@ -132,7 +139,12 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "git commit --amend",
-			"prompt": "You messed up your README file in your last commit.\nYou just fixed the contents of `README`, but haven't added it to the index.\nCommit the new version so it also fixes the last commit.\nThe fixed commit message should be `Add a README`.",
+			"prompt": [
+				"You messed up your README file in your last commit.",
+				"You just fixed the contents of `README`, but haven't added it to the index.",
+				"Commit the new version so it also fixes the last commit.",
+				"The fixed commit message should be `Add a README`."
+				],
 			"multiline": true,
 			"timeout": null,
 			"answer": [
