@@ -132,16 +132,19 @@ class ScriptQuestion (Question):
         prefix = '{}-'.format(type(self).__name__)
         if not self.multiline:
             answer = [answer]
-        with _tempfile.TemporaryDirectory(prefix=prefix) as tempdir:
-            script = '\n'.join(self.setup + answer + self.teardown)
-            status,stdout,stderr = _util.invoke(
-                args=[self.interpreter],
-                stdin=script,
-                cwd=tempdir,
-                universal_newlines=True,
-                timeout=self.timeout,
-                )
-            dirname = _os_path.basename(tempdir)
+        script = '\n'.join(self.setup + answer + self.teardown)
+        with _tempfile.NamedTemporaryFile(
+                mode='w', prefix='{}script-'.format(prefix)) as tempscript:
+            tempscript.write(script)
+            tempscript.flush()
+            with _tempfile.TemporaryDirectory(prefix=prefix) as tempdir:
+                status,stdout,stderr = _util.invoke(
+                    args=[self.interpreter, tempscript.name],
+                    cwd=tempdir,
+                    universal_newlines=True,
+                    timeout=self.timeout,
+                    )
+                dirname = _os_path.basename(tempdir)
         stdout = stdout.replace(dirname, '{}XXXXXX'.format(prefix))
         stderr = stderr.replace(dirname, '{}XXXXXX'.format(prefix))
         return status,stdout,stderr
