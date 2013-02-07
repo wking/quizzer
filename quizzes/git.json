@@ -179,7 +179,7 @@
 			"interpreter": "sh",
 			"id": "git rm / commit",
 			"prompt": [
-				"You've had a `widgets` file in repository for a few commits,",
+				"You've had a `widgets` file in your repository for a few commits,",
 				"but you don't need it any more.",
 				"Create a commit removing the file.",
 				"The commit message should be `Remove 'widgets'`."
