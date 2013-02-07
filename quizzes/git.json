@@ -192,7 +192,7 @@
 				],
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
-				"export GIT_AUTHOR_EMAIL=author@example.com",
+					"export GIT_AUTHOR_EMAIL=author@example.com",
 				"export GIT_COMMITTER_NAME='C O Mitter'",
 				"export GIT_COMMITTER_EMAIL=committer@example.com",
 				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
@@ -651,6 +651,115 @@
 			"help": "http://www.kernel.org/pub/software/scm/git/docs/gitignore.html",
 			"tags": [
 				"config"
+				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git branch",
+			"prompt": "List all the local branches in your repository.",
+			"answer": "git branch",
+			"setup": [
+				"export GIT_AUTHOR_NAME='A U Thor'",
+				"export GIT_AUTHOR_EMAIL=author@example.com",
+				"export GIT_COMMITTER_NAME='C O Mitter'",
+				"export GIT_COMMITTER_EMAIL=committer@example.com",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"(mkdir origin",
+				" cd origin",
+				" git init",
+				" git commit --allow-empty -m 'Dummy commit'",
+				" git branch feature-x",
+				" git branch feature-y",
+				")",
+				"git clone origin test",
+				"cd test",
+				"git branch feature-z"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-branch.html",
+			"tags": [
+				"branch"
+				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git branch -a",
+			"prompt": "List all the branches (local and remote-tracking) in your repository.",
+			"answer": "git branch -a",
+			"setup": [
+				"export GIT_AUTHOR_NAME='A U Thor'",
+				"export GIT_AUTHOR_EMAIL=author@example.com",
+				"export GIT_COMMITTER_NAME='C O Mitter'",
+				"export GIT_COMMITTER_EMAIL=committer@example.com",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"(mkdir origin",
+				" cd origin",
+				" git init",
+				" git commit --allow-empty -m 'Dummy commit'",
+				" git branch feature-x",
+				" git branch feature-y",
+				")",
+				"git clone origin test",
+				"cd test",
+				"git branch feature-z"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-branch.html",
+			"tags": [
+				"branch"
+				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git branch -r",
+			"prompt": "List the remote-tracking branches in your repository.",
+			"answer": "git branch -r",
+			"setup": [
+				"export GIT_AUTHOR_NAME='A U Thor'",
+				"export GIT_AUTHOR_EMAIL=author@example.com",
+				"export GIT_COMMITTER_NAME='C O Mitter'",
+				"export GIT_COMMITTER_EMAIL=committer@example.com",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"(mkdir origin",
+				" cd origin",
+				" git init",
+				" git commit --allow-empty -m 'Dummy commit'",
+				" git branch feature-x",
+				" git branch feature-y",
+				")",
+				"git clone origin test",
+				"cd test",
+				"git branch feature-z"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-branch.html",
+			"tags": [
+				"branch"
+				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git branch -d",
+			"prompt": "Delete the local `widget-x` branch",
+			"answer": "git branch -d widget-x",
+			"setup": [
+				"export GIT_AUTHOR_NAME='A U Thor'",
+				"export GIT_AUTHOR_EMAIL=author@example.com",
+				"export GIT_COMMITTER_NAME='C O Mitter'",
+				"export GIT_COMMITTER_EMAIL=committer@example.com",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"git init",
+				"git commit --allow-empty -m 'Dummy commit'",
+				"git branch widget-x"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-branch.html",
+			"tags": [
+				"branch"
 				]
 		}
 	]
