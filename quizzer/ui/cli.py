@@ -159,7 +159,10 @@ class CommandLineInterface (UserInterface):
             else:
                 correct = 'incorrect'
             correct = _colorize(self.colors[correct], correct)
-            print('  you answered: {}'.format(answer['answer']))
+            ans = answer['answer']
+            if question.multiline:
+                ans = '\n                '.join(ans)
+            print('  you answered: {}'.format(ans))
             print('     which was: {}'.format(correct))
 
     def display_totals(self):
