@@ -181,21 +181,21 @@ class CommandLineInterface (UserInterface):
         }
 
     def run(self):
-        if not self.stack:
-            return
-        cmd = QuestionCommandLine(ui=self)
-        cmd.cmdloop()
-        print()
+        if self.stack:
+            cmd = QuestionCommandLine(ui=self)
+            cmd.cmdloop()
+            print()
+        self._display_results()
 
-    def display_results(self):
+    def _display_results(self):
         print(_colorize(self.colors['result'], 'results:'))
         for question in self.quiz:
             if question.id in self.answers:
-                self.display_result(question=question)
+                self._display_result(question=question)
                 print()
-        self.display_totals()
+        self._display_totals()
 
-    def display_result(self, question):
+    def _display_result(self, question):
         answers = self.answers.get(question.id, [])
         print('question:')
         print('  {}'.format(
@@ -218,7 +218,7 @@ class CommandLineInterface (UserInterface):
             print('  you answered: {}'.format(ans))
             print('     which was: {}'.format(correct))
 
-    def display_totals(self):
+    def _display_totals(self):
         answered = self.answers.get_answered(questions=self.quiz)
         correctly_answered = self.answers.get_correctly_answered(
             questions=self.quiz)

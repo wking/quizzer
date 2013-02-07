@@ -32,9 +32,6 @@ class UserInterface (object):
     def run(self):
         raise NotImplementedError()
 
-    def display_results(self):
-        raise NotImplementedError()
-
     def get_question(self):
         if self.stack:
             return self.stack.pop(0)

@@ -90,4 +90,3 @@ def main():
         ui.run()
     finally:
         ui.answers.save()
-    ui.display_results()
