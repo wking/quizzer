@@ -877,6 +877,119 @@
 				"branch",
 				"merge"
 				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git remote add",
+			"prompt": [
+				"Add a remote repository at `git://example.com/widgets.git`.",
+				"Call the new repository `widgets`."
+				],
+			"answer": "git remote add widgets git://example.com/widgets.git",
+			"setup": [
+				"git init"
+				],
+			"teardown": [
+				"cat .git/config"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-remote.html",
+			"tags": [
+				"remote"
+				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git remote -v",
+			"prompt": "List your configured remotes and their associated URLs.",
+			"answer": "git remote -v",
+			"setup": [
+				"git init",
+				"git remote add alice git://alice.au/widgets.git",
+				"git remote add bob https://bob.br/bobs-widgets.git",
+				"git remote add charlie charlie@charlie.ca:wgts/"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-remote.html",
+			"tags": [
+				"query",
+				"remote"
+				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git fetch REPOSITORY",
+			"prompt": [
+				"Update remote-tracking branches following the `widgets` remote.",
+				"Don't merge any changes into your current branch."
+				],
+			"answer": "git fetch widgets",
+			"setup": [
+				"export GIT_AUTHOR_NAME='A U Thor'",
+				"export GIT_AUTHOR_EMAIL=author@example.com",
+				"export GIT_COMMITTER_NAME='C O Mitter'",
+				"export GIT_COMMITTER_EMAIL=committer@example.com",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"(mkdir origin",
+				" cd origin",
+				" git init",
+				" git commit --allow-empty -m 'Dummy commit'",
+				")",
+				"mkdir test",
+				"cd test",
+				"git init",
+				"git remote add widgets ../origin"
+				],
+			"teardown": [
+				"cat .git/config"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-fetch.html",
+			"tags": [
+				"fetch",
+				"remote"
+				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git push REPOSITORY BRANCH",
+			"prompt": [
+				"Update the `master` branch on the `widgets` remote with",
+				"the current contents of your `master` branch."
+				],
+			"answer": "git push widgets master",
+			"setup": [
+				"export GIT_AUTHOR_NAME='A U Thor'",
+				"export GIT_AUTHOR_EMAIL=author@example.com",
+				"export GIT_COMMITTER_NAME='C O Mitter'",
+				"export GIT_COMMITTER_EMAIL=committer@example.com",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"(mkdir test",
+				" cd test",
+				" git init",
+				" git commit --allow-empty -m 'Dummy commit'",
+				")",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:01:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"git clone --bare test origin",
+				"cd test  # subshell closed in teardown",
+				"git remote add widgets ../origin",
+				"echo 'Widget X will be wonderful' > README",
+				"git add README",
+				"git commit -am 'Add widget-x documentation'"
+				],
+			"teardown": [
+				"cd ../origin",
+				"git log --oneline"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-push.html",
+			"tags": [
+				"push",
+				"remote"
+				]
 		}
 	]
 }
