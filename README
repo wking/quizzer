@@ -71,4 +71,5 @@ The unanswered question (“What is your name?”) wasn't asked because
 the user successfully answered the question that depended on it (“What
 is your quest?”).
 
-Quizzer requires Python ≥ 3.3.
+Quizzer requires Python ≥ 3.3.  If Pygments is installed, the command
+line prompt will be colored.

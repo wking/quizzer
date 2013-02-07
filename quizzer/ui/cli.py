@@ -20,6 +20,13 @@ try:
 except ImportError as _readline_import_error:
     _readline = None
 
+try:
+    from pygments.console import colorize as _colorize
+except ImportError as e:
+    def _colorize(color_key=None, text=None):
+        return text
+    print(e)
+
 from . import UserInterface
 
 
@@ -48,13 +55,15 @@ class QuestionCommandLine (_cmd.Cmd):
         "Pose a question and prompt"
         if self.question:
             self.prompt = '\n{}\n{}'.format(
-                self.question.format_prompt(), self._prompt)
+                _colorize(
+                    self.ui.colors['question'], self.question.format_prompt()),
+                _colorize(self.ui.colors['prompt'], self._prompt))
         else:
-            self.prompt = self._prompt
+            self.prompt = _colorize(self.ui.colors['prompt'], self._prompt)
 
     def _set_ps2(self):
         "Just prompt (without the question, e.g. for multi-line answers)"
-        self.prompt = self._prompt
+        self.prompt = _colorize(self.ui.colors['prompt'], self._prompt)
 
     def default(self, line):
         self.answers.append(line)
@@ -75,9 +84,9 @@ class QuestionCommandLine (_cmd.Cmd):
             answer = ''
         correct = self.ui.process_answer(question=self.question, answer=answer)
         if correct:
-            print('correct\n')
+            print(_colorize(self.ui.colors['correct'], 'correct\n'))
         else:
-            print('incorrect\n')
+            print(_colorize(self.ui.colors['incorrect'], 'incorrect\n'))
         self.question = self.ui.get_question()
         if not self.question:
             return True  # out of questions
@@ -111,6 +120,14 @@ class QuestionCommandLine (_cmd.Cmd):
 
 
 class CommandLineInterface (UserInterface):
+    colors = {  # listed in pygments.console.light_colors
+        'question': 'turquoise',
+        'prompt': 'blue',
+        'correct': 'green',
+        'incorrect': 'red',
+        'result': 'fuchsia',
+        }
+
     def run(self):
         if not self.stack:
             return
@@ -119,7 +136,7 @@ class CommandLineInterface (UserInterface):
         print()
 
     def display_results(self):
-        print('results:')
+        print(_colorize(self.colors['result'], 'results:'))
         for question in self.quiz:
             if question.id in self.answers:
                 self.display_result(question=question)
@@ -129,7 +146,10 @@ class CommandLineInterface (UserInterface):
     def display_result(self, question):
         answers = self.answers.get(question.id, [])
         print('question:')
-        print('  {}'.format(question.format_prompt(newline='\n  ')))
+        print('  {}'.format(
+            _colorize(
+                self.colors['question'],
+                question.format_prompt(newline='\n  '))))
         la = len(answers)
         lc = len([a for a in answers if a['correct']])
         print('answers: {}/{} ({:.2f})'.format(lc, la, float(lc)/la))
@@ -138,6 +158,7 @@ class CommandLineInterface (UserInterface):
                 correct = 'correct'
             else:
                 correct = 'incorrect'
+            correct = _colorize(self.colors[correct], correct)
             print('  you answered: {}'.format(answer['answer']))
             print('     which was: {}'.format(correct))
 
