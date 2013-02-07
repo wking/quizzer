@@ -640,6 +640,7 @@
 			"interpreter": "sh",
 			"id": "gitignore",
 			"prompt": "Tell git to ignore files ending with `~`.",
+			"timeout": null,
 			"answer": "echo '*~' > .gitignore",
 			"setup": [
 					"git init"
