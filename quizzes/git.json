@@ -761,6 +761,88 @@
 			"tags": [
 				"branch"
 				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git checkout",
+			"prompt": "Change your working directory to the `widget-x` branch",
+			"answer": "git checkout widget-x",
+			"setup": [
+				"export GIT_AUTHOR_NAME='A U Thor'",
+				"export GIT_AUTHOR_EMAIL=author@example.com",
+				"export GIT_COMMITTER_NAME='C O Mitter'",
+				"export GIT_COMMITTER_EMAIL=committer@example.com",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"git init",
+				"git commit --allow-empty -m 'Dummy commit'",
+				"git branch widget-x"
+				],
+			"teardown": [
+				"git branch"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-checkout.html",
+			"tags": [
+				"branch"
+				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git checkout -b",
+			"prompt": "Create and change to a new `widget-x` branch",
+			"answer": "git checkout -b widget-x",
+			"setup": [
+				"export GIT_AUTHOR_NAME='A U Thor'",
+				"export GIT_AUTHOR_EMAIL=author@example.com",
+				"export GIT_COMMITTER_NAME='C O Mitter'",
+				"export GIT_COMMITTER_EMAIL=committer@example.com",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"git init",
+				"git commit --allow-empty -m 'Dummy commit'"
+				],
+			"teardown": [
+				"git branch",
+				"git log --all --oneline --graph --decorate"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-checkout.html",
+			"tags": [
+				"branch"
+				]
+		},
+		{
+			"class": "ScriptQuestion",
+			"interpreter": "sh",
+			"id": "git checkout -b NEW_BRANCH START_POINT",
+			"prompt": "Create and change to a new `widget-y` branch based on the `widget-x` branch.",
+			"answer": "git checkout -b widget-y widget-x",
+			"setup": [
+				"export GIT_AUTHOR_NAME='A U Thor'",
+				"export GIT_AUTHOR_EMAIL=author@example.com",
+				"export GIT_COMMITTER_NAME='C O Mitter'",
+				"export GIT_COMMITTER_EMAIL=committer@example.com",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"git init",
+				"git commit --allow-empty -m 'Dummy commit'",
+				"export GIT_AUTHOR_DATE=1970-01-01T00:01:00Z",
+				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
+				"git checkout -b widget-x",
+				"echo 'Widget X will be wonderful' > README",
+				"git add README",
+				"git commit -am 'Add widget-x documentation'",
+				"git checkout master"
+				],
+			"teardown": [
+				"git branch",
+				"git log --all --oneline --graph --decorate"
+				],
+			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-checkout.html",
+			"tags": [
+				"branch"
+				]
 		}
 	]
 }
