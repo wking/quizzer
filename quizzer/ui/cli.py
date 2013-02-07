@@ -28,7 +28,7 @@ except ImportError as e:
     print(e)
 
 from .. import error as _error
-from . import UserInterface
+from . import UserInterface as _UserInterface
 
 
 class QuestionCommandLine (_cmd.Cmd):
@@ -171,7 +171,7 @@ class QuestionCommandLine (_cmd.Cmd):
         super(QuestionCommandLine, self).do_help(arg)
 
 
-class CommandLineInterface (UserInterface):
+class CommandLineInterface (_UserInterface):
     colors = {  # listed in pygments.console.light_colors
         'question': 'turquoise',
         'prompt': 'blue',
