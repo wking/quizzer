@@ -107,6 +107,13 @@ class QuestionCommandLine (_cmd.Cmd):
         self._reset()
         return True
 
+    def do_skip(self, arg):
+        "Skip the current question, and continue with the quiz"
+        self.question = self.ui.get_question()
+        if not self.question:
+            return True  # out of questions
+        self._reset()
+
     def do_hint(self, arg):
         "Show a hint for the current question"
         self._reset()
