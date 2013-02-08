@@ -109,6 +109,7 @@ class QuestionCommandLine (_cmd.Cmd):
 
     def do_skip(self, arg):
         "Skip the current question, and continue with the quiz"
+        self.ui.stack.append(self.question)
         self.question = self.ui.get_question()
         if not self.question:
             return True  # out of questions
