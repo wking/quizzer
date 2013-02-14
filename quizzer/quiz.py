@@ -22,7 +22,9 @@ from . import question as _question
 
 
 class Quiz (list):
-    def __init__(self, questions=None, path=None, encoding=None):
+    def __init__(self, introduction=None, questions=None, path=None,
+                 encoding=None):
+        self.introduction = introduction
         if questions is None:
             questions = []
         super(Quiz, self).__init__(questions)
@@ -43,6 +45,7 @@ class Quiz (list):
         if version != __version__:
             raise NotImplementedError('upgrade from {} to {}'.format(
                     version, __version__))
+        self.introduction = data.get('introduction', None)
         for state in data['questions']:
             question_class_name = state.pop('class', 'Question')
             question_class = _question.QUESTION_CLASS[question_class_name]
@@ -57,6 +60,7 @@ class Quiz (list):
             state['class'] = type(question).__name__
         data = {
             'version': __version__,
+            'introduction': self.introduction,
             'questions': questions,
             }
         with self._open(mode='w', **kwargs) as f:

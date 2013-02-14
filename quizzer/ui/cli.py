@@ -42,6 +42,8 @@ class QuestionCommandLine (_cmd.Cmd):
     def __init__(self, ui):
         super(QuestionCommandLine, self).__init__()
         self.ui = ui
+        if self.ui.quiz.introduction:
+            self.intro = '\n\n'.join([self.intro, self.ui.quiz.introduction])
 
     def preloop(self):
         self.question = self.ui.get_question()

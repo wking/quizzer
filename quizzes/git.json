@@ -1,5 +1,6 @@
 {
 	"version": "0.1",
+	"introduction": "Test your knowledge of the Git version control system.",
 	"questions": [
 		{
 			"class": "ScriptQuestion",
