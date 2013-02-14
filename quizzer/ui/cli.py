@@ -45,9 +45,15 @@ class QuestionCommandLine (_cmd.Cmd):
         if self.ui.quiz.introduction:
             self.intro = '\n\n'.join([self.intro, self.ui.quiz.introduction])
 
-    def preloop(self):
+    def get_question(self):
         self.question = self.ui.get_question()
-        self._reset()
+        if self.question:
+            self._reset()
+        else:
+            return True  # out of questions
+
+    def preloop(self):
+        self.get_question()
 
     def _reset(self):
         self.answers = []
@@ -89,10 +95,7 @@ class QuestionCommandLine (_cmd.Cmd):
             print(_colorize(self.ui.colors['correct'], 'correct\n'))
         else:
             print(_colorize(self.ui.colors['incorrect'], 'incorrect\n'))
-        self.question = self.ui.get_question()
-        if not self.question:
-            return True  # out of questions
-        self._reset()
+        return self.get_question()
 
     def do_answer(self, arg):
         """Explicitly add a line to your answer
@@ -112,10 +115,7 @@ class QuestionCommandLine (_cmd.Cmd):
     def do_skip(self, arg):
         "Skip the current question, and continue with the quiz"
         self.ui.stack.append(self.question)
-        self.question = self.ui.get_question()
-        if not self.question:
-            return True  # out of questions
-        self._reset()
+        return self.get_question()
 
     def do_hint(self, arg):
         "Show a hint for the current question"
