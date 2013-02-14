@@ -162,7 +162,8 @@ class CommandLineInterface (UserInterface):
                 question.format_prompt(newline='\n  '))))
         la = len(answers)
         lc = len([a for a in answers if a['correct']])
-        print('answers: {}/{} ({:.2f})'.format(lc, la, float(lc)/la))
+        if la:
+            print('answers: {}/{} ({:.2f})'.format(lc, la, float(lc)/la))
         for answer in answers:
             if answer['correct']:
                 correct = 'correct'
@@ -182,5 +183,7 @@ class CommandLineInterface (UserInterface):
         la = len(answered)
         lc = len(correctly_answered)
         print('answered {} of {} questions'.format(la, len(self.quiz)))
-        print(('of the answered questions, {} ({:.2f}) were answered correctly'
-               ).format(lc, float(lc)/la))
+        if la:
+            print(('of the answered questions, '
+                   '{} ({:.2f}) were answered correctly'
+                   ).format(lc, float(lc)/la))
