@@ -86,6 +86,8 @@ def main():
             print()
         return
     ui = _cli.CommandLineInterface(quiz=quiz, answers=answers, stack=stack)
-    ui.run()
-    ui.answers.save()
+    try:
+        ui.run()
+    finally:
+        ui.answers.save()
     ui.display_results()

@@ -15,8 +15,7 @@
 # quizzer.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging as _logging
-import os.path as _os_path
-import tempfile as _tempfile
+import os as _os
 
 from . import error as _error
 from . import util as _util
@@ -101,10 +100,37 @@ class ChoiceQuestion (Question):
 
 
 class ScriptQuestion (Question):
+    """Question testing scripting knowledge
+
+    Or using a script interpreter (like the POSIX shell) to test some
+    other knowledge.
+
+    If stdout/stderr capture is acceptable (e.g. if you're only
+    running non-interactive commands or curses applications that grab
+    the TTY directly), you can just run `.check()` like a normal
+    question.
+
+    If, on the other hand, you want users to be able to interact with
+    stdout and stderr (e.g. to drop into a shell in the temporary
+    directory), use:
+
+        tempdir = q.setup_tempdir()
+        try:
+            tempdir.invoke(..., env=q.get_environment())
+            # can call .invoke() multiple times here
+            self.check(tempdir=tempdir)  # optional answer argument
+        finally:
+            tempdir.cleanup()  # occasionally redundant, but that's ok
+    """
     _state_attributes = Question._state_attributes + [
         'interpreter',
         'setup',
+        'pre_answer',
+        'post_answer',
         'teardown',
+        'environment',
+        'allow_interactive',
+        'compare_answers',
         'timeout',
         ]
 
@@ -113,58 +139,104 @@ class ScriptQuestion (Question):
             state['interpreter'] = 'sh'  # POSIX-compatible shell
         if 'timeout' not in state:
             state['timeout'] = 3
-        for key in ['setup', 'teardown']:
+        if 'environment' not in state:
+            state['environment'] = {}
+        for key in ['allow_interactive', 'compare_answers']:
+            if key not in state:
+                state[key] = False
+        for key in ['setup', 'pre_answer', 'post_answer', 'teardown']:
             if key not in state:
                 state[key] = []
         super(ScriptQuestion, self).__setstate__(state)
 
-    def check(self, answer):
+    def run(self, tempdir, lines, **kwargs):
+        text = '\n'.join(lines + [''])
+        try:
+            status,stdout,stderr = tempdir.invoke(
+                interpreter=self.interpreter, text=text,
+                timeout=self.timeout, **kwargs)
+        except:
+            tempdir.cleanup()
+            raise
+        else:
+            return (status, stdout, stderr)
+
+    def setup_tempdir(self):
+        tempdir = _util.TemporaryDirectory()
+        self.run(tempdir=tempdir, lines=self.setup)
+        return tempdir
+
+    def teardown_tempdir(self, tempdir):
+        return self.run(tempdir=tempdir, lines=self.teardown)
+
+    def get_environment(self):
+        if self.environment:
+            env = {}
+            env.update(_os.environ)
+            env.update(self.environment)
+            return env
+
+    def _invoke(self, answer=None, tempdir=None):
+        """Run the setup/answer/teardown process
+
+        If tempdir is not None, skip the setup process.
+        If answer is None, skip the answer process.
+
+        In any case, cleanup the tempdir before returning.
+        """
+        if not tempdir:
+            tempdir = self.setup_tempdir()
+        try:
+            if answer:
+                if not self.multiline:
+                    answer = [answer]
+                a_status,a_stdout,a_stderr = self.run(
+                    tempdir=tempdir,
+                    lines=self.pre_answer + answer + self.post_answer,
+                    env=self.get_environment())
+            else:
+                a_status = a_stdout = a_stderr = None
+            t_status,t_stdout,t_stderr = self.teardown_tempdir(tempdir=tempdir)
+        finally:
+            tempdir.cleanup()
+        return (a_status,a_stdout,a_stderr,
+                t_status,t_stdout,t_stderr)
+
+    def check(self, answer=None, tempdir=None):
+        """Compare the user's answer with expected values
+
+        Arguments are passed through to ._invoke() for calculating the
+        user's response.
+        """
         # figure out the expected values
-        e_status,e_stdout,e_stderr = self._invoke(self.answer)
+        (ea_status,ea_stdout,ea_stderr,
+         et_status,et_stdout,et_stderr) = self._invoke(answer=self.answer)
         # get values for the user-supplied answer
         try:
-            a_status,a_stdout,a_stderr = self._invoke(answer)
-        except _error.CommandError as e:
-            LOG.warning(e)
+            (ua_status,ua_stdout,ua_stderr,
+             ut_status,ut_stdout,ut_stderr) = self._invoke(
+                answer=answer, tempdir=tempdir)
+        except (KeyboardInterrupt, _error.CommandError) as e:
+            if isinstance(e, KeyboardInterrupt):
+                LOG.warning('KeyboardInterrupt')
+            else:
+                LOG.warning(e)
             return False
-        for (name, e, a) in [
-                ('stderr', e_stderr, a_stderr),
-                ('status', e_status, a_status),
-                ('stdout', e_stdout, a_stdout),
-                ]:
-            if a != e:
-                if name == 'status':
-                    LOG.info(
-                        'missmatched {}, expected {!r} but got {!r}'.format(
-                            name, e, a))
-                else:
-                    LOG.info('missmatched {}, expected:'.format(name))
-                    LOG.info(e)
-                    LOG.info('but got:')
-                    LOG.info(a)
-                return False
+        # compare user-generated output with expected values
+        if answer:
+            if self.compare_answers:
+                if _util.invocation_difference(  # compare answers
+                        ea_status, ea_stdout, ea_stderr,
+                        ua_status, ua_stdout, ua_stderr):
+                    return False
+            elif ua_stderr:
+                LOG.warning(ua_stderr)
+        if _util.invocation_difference(  # compare teardown
+                et_status, et_stdout, et_stderr,
+                ut_status, ut_stdout, ut_stderr):
+            return False
         return True
-
-    def _invoke(self, answer):
-        prefix = '{}-'.format(type(self).__name__)
-        if not self.multiline:
-            answer = [answer]
-        script = '\n'.join(self.setup + answer + self.teardown + [''])
-        with _tempfile.NamedTemporaryFile(
-                mode='w', prefix='{}script-'.format(prefix)) as tempscript:
-            tempscript.write(script)
-            tempscript.flush()
-            with _tempfile.TemporaryDirectory(prefix=prefix) as tempdir:
-                status,stdout,stderr = _util.invoke(
-                    args=[self.interpreter, tempscript.name],
-                    cwd=tempdir,
-                    universal_newlines=True,
-                    timeout=self.timeout,
-                    )
-                dirname = _os_path.basename(tempdir)
-        stdout = stdout.replace(dirname, '{}XXXXXX'.format(prefix))
-        stderr = stderr.replace(dirname, '{}XXXXXX'.format(prefix))
-        return status,stdout,stderr
+        
 
 for name,obj in list(locals().items()):
     if name.startswith('_'):

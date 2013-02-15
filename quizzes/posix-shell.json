@@ -8,6 +8,7 @@
 			"id": "quoting spaces",
 			"prompt": "Call `ls` and pass it two arguments: `a` and `b c`.",
 			"answer": "ls a 'b c'",
+			"compare_answers": true,
 			"help": "http://pubs.opengroup.org/onlinepubs/009696699/utilities/xcu_chap02.html#tag_02_02"
 		},
 		{
@@ -16,6 +17,7 @@
 			"id": "echo constant",
 			"prompt": "Print the string `hello, world` to stdout.",
 			"answer": "echo 'hello, world'",
+			"compare_answers": true,
 			"help": "http://pubs.opengroup.org/onlinepubs/009696699/utilities/echo.html"
 		},
 		{
@@ -24,6 +26,7 @@
 			"id": "parameter expansion",
 			"prompt": "Print the contents of the PATH variable to stdout.",
 			"answer": "echo \"$PATH\"",
+			"compare_answers": true,
 			"help": "http://pubs.opengroup.org/onlinepubs/009696699/utilities/xcu_chap02.html#tag_02_06_02",
 			"dependencies": [
 				"echo constant"
@@ -35,21 +38,28 @@
 			"id": "variable assign constant",
 			"prompt": "Set the ABC variable to the string `xyz`.",
 			"answer": "ABC='xyz'",
-			"teardown": [
+			"post_answer": [
 				"echo \"ABC: '${ABC}'\""
 				],
+			"compare_answers": true,
 			"help": "http://tldp.org/LDP/abs/html/varassignment.html"
 		},
 		{
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
+			"id": "variable assign altered",
 			"prompt": "Prepend the string `/some/path:` to the PATH variable.",
 			"answer": "PATH=\"/some/path:$PATH\"",
-			"teardown": [
+			"post_answer": [
 				"echo \"PATH: '${PATH}'\""
 				],
-			"help": "",
+			"compare_answers": true,
+			"help": [
+				"http://pubs.opengroup.org/onlinepubs/009696699/utilities/xcu_chap02.html#tag_02_06_02",
+				"http://tldp.org/LDP/abs/html/varassignment.html"
+				],
 			"dependencies": [
+				"parameter expansion",
 				"variable assign constant"
 				]
 		}

@@ -6,8 +6,9 @@
 			"class": "ScriptQuestion",
 			"intepreter": "sh",
 			"id": "git help config",
-			"prompt": "Get help for Git's `config` command",
+			"prompt": "Get help for Git's `config` command.",
 			"answer": "git help config",
+			"compare_answers": true,
 			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-help.html",
 			"tags": [
 				"help"
@@ -19,9 +20,9 @@
 			"id": "git config --global user.name",
 			"prompt": "Configure your user-wide name to be `A U Thor`.",
 			"answer": "git config --global user.name 'A U Thor'",
-			"setup": [
-					"export HOME=."
-					],
+			"environment": {
+				"HOME": "."
+				},
 			"teardown": [
 				"cat .gitconfig"
 				],
@@ -36,9 +37,9 @@
 			"id": "git config --global user.email",
 			"prompt": "Configure your user-wide email to be `author@example.com`.",
 			"answer": "git config --global user.email 'author@example.com'",
-			"setup": [
-					"export HOME=."
-					],
+			"environment": {
+				"HOME": "."
+				},
 			"teardown": [
 				"cat .gitconfig"
 				],
@@ -59,6 +60,8 @@
 					"git init"
 					],
 			"teardown": [
+				"cd my-project",
+				"git rev-parse --git-dir",
 				"git status"
 				],
 			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-init.html",
@@ -96,18 +99,20 @@
 				"git add README",
 				"git commit -m 'Add a README'"
 				],
+			"environment": {
+				"GIT_AUTHOR_NAME": "A U Thor",
+				"GIT_AUTHOR_EMAIL": "author@example.com",
+				"GIT_COMMITTER_NAME": "C O Mitter",
+				"GIT_COMMITTER_EMAIL": "committer@example.com",
+				"GIT_AUTHOR_DATE": "1970-01-01T00:00:00Z",
+				"GIT_COMMITTER_DATE": "1970-01-01T00:00:00Z"
+				},
 			"setup": [
-				"export GIT_AUTHOR_NAME='A U Thor'",
-				"export GIT_AUTHOR_EMAIL=author@example.com",
-				"export GIT_COMMITTER_NAME='C O Mitter'",
-				"export GIT_COMMITTER_EMAIL=committer@example.com",
-				"export GIT_AUTHOR_DATE=1970-01-01T00:00:00Z",
-				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
 				"git init",
 				"echo 'This project is wonderful' > README"
 				],
 			"teardown": [
-				"git ls-files",
+				"git log -p",
 				"git status"
 				],
 			"help": [
@@ -128,6 +133,7 @@
 				"How would you check?"
 				],
 			"answer": "git status",
+			"compare_answers": true,
 			"setup": [
 				"git init",
 				"echo 'This project is wonderful' > README",
@@ -150,6 +156,14 @@
 				],
 			"timeout": null,
 			"answer": "git commit -am 'Reformat widgets'",
+			"environment": {
+				"GIT_AUTHOR_NAME": "A U Thor",
+				"GIT_AUTHOR_EMAIL": "author@example.com",
+				"GIT_COMMITTER_NAME": "C O Mitter",
+				"GIT_COMMITTER_EMAIL": "committer@example.com",
+				"GIT_AUTHOR_DATE": "1970-01-01T00:01:00Z",
+				"GIT_COMMITTER_DATE": "1970-01-01T00:01:00Z"
+				},
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -162,8 +176,6 @@
 				"echo 'Lots of widgets' > widgets",
 				"git add README widgets",
 				"git commit -m 'Add some widgets'",
-				"export GIT_AUTHOR_DATE=1970-01-01T00:01:00Z",
-				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
 				"echo 'Take a look in the widgets file.' >> README",
 				"echo 'Widget-1 should be blue' >> widgets"
 				],
@@ -191,6 +203,14 @@
 				"git rm widgets",
 				"git commit -am \"Remove 'widgets'\""
 				],
+			"environment": {
+				"GIT_AUTHOR_NAME": "A U Thor",
+				"GIT_AUTHOR_EMAIL": "author@example.com",
+				"GIT_COMMITTER_NAME": "C O Mitter",
+				"GIT_COMMITTER_EMAIL": "committer@example.com",
+				"GIT_AUTHOR_DATE": "1970-01-01T00:01:00Z",
+				"GIT_COMMITTER_DATE": "1970-01-01T00:01:00Z"
+				},
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -201,9 +221,7 @@
 				"git init",
 				"echo 'Lots of widgets' > widgets",
 				"git add widgets",
-				"git commit -m 'Add some widgets'",
-				"export GIT_AUTHOR_DATE=1970-01-01T00:01:00Z",
-				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\""
+				"git commit -m 'Add some widgets'"
 				],
 			"teardown": [
 				"git log -p"
@@ -226,6 +244,7 @@
 				"Ask Git to display the changes you've make (but not staged)."
 				],
 			"answer": "git diff",
+			"compare_answers": true,
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -256,6 +275,7 @@
 				"including any changes that you may have already staged."
 				],
 			"answer": "git diff HEAD --",
+			"compare_answers": true,
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -287,6 +307,7 @@
 				"including any changes that you may have already staged."
 				],
 			"answer": "git diff HEAD -- README",
+			"compare_answers": true,
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -317,6 +338,7 @@
 				"Ask Git to display only the changes you've staged."
 				],
 			"answer": "git diff --cached",
+			"compare_answers": true,
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -344,6 +366,7 @@
 			"id": "git log",
 			"prompt": "Print the commits leading up to your current state.",
 			"answer": "git log",
+			"compare_answers": true,
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -376,6 +399,7 @@
 				"showing a patch for each commit."
 				],
 			"answer": "git log -p",
+			"compare_answers": true,
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -408,6 +432,7 @@
 				"showing the files changed by each commit."
 				],
 			"answer": "git log --stat",
+			"compare_answers": true,
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -437,9 +462,10 @@
 			"id": "git log --all",
 			"prompt": [
 				"Print every commit in your repository reachable from a reference",
-				"(e.g from any tag or branch)"
+				"(e.g from any tag or branch)."
 				],
 			"answer": "git log --all",
+			"compare_answers": true,
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -475,6 +501,7 @@
 				"with each commit only using a single line."
 				],
 			"answer": "git log --oneline",
+			"compare_answers": true,
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -508,6 +535,7 @@
 				"and an ASCII-art inheritence graph."
 				],
 			"answer": "git log --oneline --graph",
+			"compare_answers": true,
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -538,9 +566,10 @@
 			"prompt": [
 				"Print the commits leading up to your current state,",
 				"with each commit only using a single line",
-				"and reference (e.g. tag and branch) names before the summary"
+				"and reference (e.g. tag and branch) names before the summary."
 				],
 			"answer": "git log --oneline --decorate",
+			"compare_answers": true,
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -611,6 +640,14 @@
 			"answer": [
 				"git commit --amend -am 'Add a README'"
 				],
+			"environment": {
+				"GIT_AUTHOR_NAME": "A U Thor",
+				"GIT_AUTHOR_EMAIL": "author@example.com",
+				"GIT_COMMITTER_NAME": "C O Mitter",
+				"GIT_COMMITTER_EMAIL": "committer@example.com",
+				"GIT_AUTHOR_DATE": "1970-01-01T00:01:00Z",
+				"GIT_COMMITTER_DATE": "1970-01-01T00:01:00Z"
+				},
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -622,8 +659,6 @@
 				"echo 'This project is terrible' > README",
 				"git add README",
 				"git commit -am 'Add a README'",
-				"export GIT_AUTHOR_DATE=1970-01-01T00:01:00Z",
-				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
 				"echo 'This project is wonderful' > README"
 				],
 			"teardown": [
@@ -661,6 +696,7 @@
 			"id": "git branch",
 			"prompt": "List all the local branches in your repository.",
 			"answer": "git branch",
+			"compare_answers": true,
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -690,6 +726,7 @@
 			"id": "git branch -a",
 			"prompt": "List all the branches (local and remote-tracking) in your repository.",
 			"answer": "git branch -a",
+			"compare_answers": true,
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -719,6 +756,7 @@
 			"id": "git branch -r",
 			"prompt": "List the remote-tracking branches in your repository.",
 			"answer": "git branch -r",
+			"compare_answers": true,
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -746,7 +784,7 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "git branch -d",
-			"prompt": "Delete the local `widget-x` branch",
+			"prompt": "Delete the local `widget-x` branch, which you just merged.",
 			"answer": "git branch -d widget-x",
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
@@ -759,6 +797,10 @@
 				"git commit --allow-empty -m 'Dummy commit'",
 				"git branch widget-x"
 				],
+			"teardown": [
+				"git branch",
+				"git status"
+				],
 			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-branch.html",
 			"tags": [
 				"branch"
@@ -768,7 +810,7 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "git checkout",
-			"prompt": "Change your working directory to the `widget-x` branch",
+			"prompt": "Change your working directory to the `widget-x` branch.",
 			"answer": "git checkout widget-x",
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
@@ -793,7 +835,7 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "git checkout -b",
-			"prompt": "Create and change to a new `widget-x` branch",
+			"prompt": "Create and change to a new `widget-x` branch.",
 			"answer": "git checkout -b widget-x",
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
@@ -850,8 +892,16 @@
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
 			"id": "git merge",
-			"prompt": "Merge the `widget-x` branch into the current branch",
+			"prompt": "Merge the `widget-x` branch into the current branch.",
 			"answer": "git merge widget-x",
+			"environment": {
+				"GIT_AUTHOR_NAME": "A U Thor",
+				"GIT_AUTHOR_EMAIL": "author@example.com",
+				"GIT_COMMITTER_NAME": "C O Mitter",
+				"GIT_COMMITTER_EMAIL": "committer@example.com",
+				"GIT_AUTHOR_DATE": "1970-01-01T00:02:00Z",
+				"GIT_COMMITTER_DATE": "1970-01-01T00:02:00Z"
+				},
 			"setup": [
 				"export GIT_AUTHOR_NAME='A U Thor'",
 				"export GIT_AUTHOR_EMAIL=author@example.com",
@@ -867,8 +917,6 @@
 				"echo 'Widget X will be wonderful' > README",
 				"git add README",
 				"git commit -am 'Add widget-x documentation'",
-				"export GIT_AUTHOR_DATE=1970-01-01T00:02:00Z",
-				"export GIT_COMMITTER_DATE=\"$GIT_AUTHOR_DATE\"",
 				"git checkout master"
 				],
 			"teardown": [
@@ -906,6 +954,7 @@
 			"id": "git remote -v",
 			"prompt": "List your configured remotes and their associated URLs.",
 			"answer": "git remote -v",
+			"compare_answers": true,
 			"setup": [
 				"git init",
 				"git remote add alice git://alice.au/widgets.git",
@@ -944,8 +993,12 @@
 				"git init",
 				"git remote add widgets ../origin"
 				],
+			"pre_answer": [
+				"cd test"
+				],
 			"teardown": [
-				"cat .git/config"
+				"cd test",
+				"git log --all --oneline --graph --decorate"
 				],
 			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-fetch.html",
 			"tags": [
@@ -983,8 +1036,11 @@
 				"git add README",
 				"git commit -am 'Add widget-x documentation'"
 				],
+			"pre_answer": [
+				"cd test"
+				],
 			"teardown": [
-				"cd ../origin",
+				"cd origin",
 				"git log --oneline"
 				],
 			"help": "http://www.kernel.org/pub/software/scm/git/docs/git-push.html",

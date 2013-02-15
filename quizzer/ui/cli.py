@@ -27,6 +27,7 @@ except ImportError as e:
         return text
     print(e)
 
+from .. import error as _error
 from . import UserInterface
 
 
@@ -44,6 +45,7 @@ class QuestionCommandLine (_cmd.Cmd):
         self.ui = ui
         if self.ui.quiz.introduction:
             self.intro = '\n\n'.join([self.intro, self.ui.quiz.introduction])
+        self._tempdir = None
 
     def get_question(self):
         self.question = self.ui.get_question()
@@ -57,6 +59,9 @@ class QuestionCommandLine (_cmd.Cmd):
 
     def _reset(self):
         self.answers = []
+        if self._tempdir:
+            self._tempdir.cleanup()  # occasionally redundant, but that's ok
+        self._tempdir = None
         self._set_ps1()
 
     def _set_ps1(self):
@@ -90,7 +95,11 @@ class QuestionCommandLine (_cmd.Cmd):
             answer = self.answers[0]
         else:
             answer = ''
-        correct = self.ui.process_answer(question=self.question, answer=answer)
+        kwargs = {}
+        if self._tempdir:
+            kwargs['tempdir'] = self._tempdir
+        correct = self.ui.process_answer(
+            question=self.question, answer=answer, **kwargs)
         if correct:
             print(_colorize(self.ui.colors['correct'], 'correct\n'))
         else:
@@ -106,6 +115,32 @@ class QuestionCommandLine (_cmd.Cmd):
           quizzer? answer help=5
         """
         return self.default(arg)
+
+    def do_shell(self, arg):
+        """Run a shell command in the question temporary directory
+
+        For example, you can spawn an interactive session with:
+
+          quizzer? !bash
+
+        If the question does not allow interactive sessions, this
+        action is a no-op.
+        """
+        if getattr(self.question, 'allow_interactive', False):
+            if not self._tempdir:
+                self._tempdir = self.question.setup_tempdir()
+            try:
+                self._tempdir.invoke(
+                    interpreter='/bin/sh', text=arg, stdout=None, stderr=None,
+                    universal_newlines=False,
+                    env=self.question.get_environment())
+            except (KeyboardInterrupt, _error.CommandError) as e:
+                if isinstance(e, KeyboardInterrupt):
+                    LOG.warning('KeyboardInterrupt')
+                else:
+                    LOG.warning(e)
+                self._tempdir.cleanup()
+                self._tempdir = None
 
     def do_quit(self, arg):
         "Stop taking the quiz"

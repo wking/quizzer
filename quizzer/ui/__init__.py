@@ -39,8 +39,8 @@ class UserInterface (object):
         if self.stack:
             return self.stack.pop(0)
 
-    def process_answer(self, question, answer):
-        correct = question.check(answer)
+    def process_answer(self, question, answer, **kwargs):
+        correct = question.check(answer=answer, **kwargs)
         self.answers.add(question=question, answer=answer, correct=correct)
         if not correct:
             self.stack.insert(0, question)

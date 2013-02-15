@@ -5,8 +5,10 @@
 		{
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
+			"id": "ls",
 			"prompt": "List all the files in the current directory.",
 			"answer": "ls",
+			"compare_answers": true,
 			"setup": [
 				"touch file-1 file-2 file-3"
 				],
@@ -17,36 +19,43 @@
 			"interpreter": "sh",
 			"prompt": "Print the current directory to stdout.",
 			"answer": "pwd",
+			"compare_answers": true,
 			"help": "http://pubs.opengroup.org/onlinepubs/009696699/idx/utilities.html"
 		},
 		{
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
+			"id": "cd",
 			"prompt": "Change to your home directory.",
 			"answer": "cd",
-			"teardown": [
+			"post_answer": [
 				"pwd"
 				],
+			"compare_answers": true,
 			"help": "http://pubs.opengroup.org/onlinepubs/009696699/idx/utilities.html"
 		},
 		{
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
+			"id": "cd ..",
 			"prompt": "Change to the parent of your current working directory.",
 			"answer": "cd ..",
-			"teardown": [
+			"post_answer": [
 				"pwd"
 				],
+			"compare_answers": true,
 			"help": "http://pubs.opengroup.org/onlinepubs/009696699/idx/utilities.html",
 			"dependencies": [
-				"change to your home directory"
+				"cd"
 				]
 		},
 		{
 			"class": "ScriptQuestion",
 			"interpreter": "sh",
+			"id": "cat",
 			"prompt": "Print the contents of README file to the terminal.",
 			"answer": "cat README",
+			"compare_answers": true,
 			"setup": [
 				"echo 'This project is wonderful' > README"
 				],
@@ -55,7 +64,7 @@
 				"http://pubs.opengroup.org/onlinepubs/009696699/idx/utilities.html"
 				],
 			"dependencies": [
-				"list all the files in the current directory"
+				"ls"
 				]
 		}
 	]
