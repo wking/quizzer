@@ -22,14 +22,15 @@ from . import question as _question
 
 
 class Quiz (list):
-    def __init__(self, introduction=None, questions=None, path=None,
-                 encoding=None):
-        self.introduction = introduction
+    def __init__(self, questions=None, path=None, encoding=None,
+                 copyright=None, introduction=None):
         if questions is None:
             questions = []
         super(Quiz, self).__init__(questions)
         self.path = path
         self.encoding = encoding
+        self.copyright = copyright
+        self.introduction = introduction
 
     def _open(self, mode='r', path=None, encoding=None):
         if path:
@@ -45,6 +46,7 @@ class Quiz (list):
         if version != __version__:
             raise NotImplementedError('upgrade from {} to {}'.format(
                     version, __version__))
+        self.copyright = data.get('copyright', None)
         self.introduction = data.get('introduction', None)
         for state in data['questions']:
             question_class_name = state.pop('class', 'Question')
@@ -60,6 +62,7 @@ class Quiz (list):
             state['class'] = type(question).__name__
         data = {
             'version': __version__,
+            'copyright': self.copyright,
             'introduction': self.introduction,
             'questions': questions,
             }

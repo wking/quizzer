@@ -157,6 +157,13 @@ class QuestionCommandLine (_cmd.Cmd):
         self._reset()
         print(self.question.format_help())
 
+    def do_copyright(self, arg):
+        "Print the quiz copyright notice"
+        if self.ui.quiz.copyright:
+            print('\n'.join(self.ui.quiz.copyright))
+        else:
+            print(self.ui.quiz.copyright)
+
     def do_help(self, arg):
         'List available commands with "help" or detailed help with "help cmd"'
         if not arg:
