@@ -1,5 +1,13 @@
 {
 	"version": "0.1",
+	"copyright": [
+		"Copyright (C) 2012-2013 Software Carpentry",
+		"                        The University of Edinburgh",
+		"                        University College London",
+		"",
+		"The questions for this quiz are CC BY 3.0 Unported",
+		"http://creativecommons.org/licenses/by/3.0/"
+		],
 	"introduction": "You have one hour to complete the following tasks involving Git, POSIX, and Python.  If at any point you would like clarification, please do not hesitate to ask.  If at any point you are unable to complete a task, you may also ask for help so that you can proceed to the next task, but doing so will be considered equivalent to not completing that task.  You may search the web, man pages, etc..",
 	"questions": [
 		{
