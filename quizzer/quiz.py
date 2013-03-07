@@ -44,8 +44,13 @@ class Quiz (list):
             data = _json.load(f)
         version = data.get('version', None)
         if version != __version__:
-            raise NotImplementedError('upgrade from {} to {}'.format(
-                    version, __version__))
+            try:
+                upgrader = getattr(
+                    self, '_upgrade_from_{}'.format(version.replace('.', '_')))
+            except AttributeError as e:
+                raise NotImplementedError('upgrade from {} to {}'.format(
+                        version, __version__)) from e
+            data = upgrader(data)
         self.copyright = data.get('copyright', None)
         self.introduction = data.get('introduction', None)
         for state in data['questions']:
@@ -86,3 +91,7 @@ class Quiz (list):
             raise KeyError(id)
         raise NotImplementedError(
             'multiple questions with one ID: {}'.format(matches))
+
+    def _upgrade_from_0_1(self, data):
+        data['version'] = __version__
+        return data

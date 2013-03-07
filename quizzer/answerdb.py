@@ -39,8 +39,13 @@ class AnswerDatabase (dict):
             data = _json.load(f)
         version = data.get('version', None)
         if version != __version__:
-            raise NotImplementedError('upgrade from {} to {}'.format(
-                    version, __version__))
+            try:
+                upgrader = getattr(
+                    self, '_upgrade_from_{}'.format(version.replace('.', '_')))
+            except AttributeError as e:
+                raise NotImplementedError('upgrade from {} to {}'.format(
+                        version, __version__)) from e
+            data = upgrader(data)
         self.update(data['answers'])
 
     def save(self, **kwargs):
@@ -77,3 +82,7 @@ class AnswerDatabase (dict):
     def get_never_correctly_answered(self, questions):
         return [q for q in questions
                 if True not in [a['correct'] for a in self.get(q.id, [])]]
+
+    def _upgrade_from_0_1(self, data):
+        data['version'] = __version__
+        return data
