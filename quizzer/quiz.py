@@ -95,3 +95,5 @@ class Quiz (list):
     def _upgrade_from_0_1(self, data):
         data['version'] = __version__
         return data
+
+    _upgrade_from_0_2 = _upgrade_from_0_1
