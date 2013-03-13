@@ -14,7 +14,12 @@
 # You should have received a copy of the GNU General Public License along with
 # quizzer.  If not, see <http://www.gnu.org/licenses/>.
 
+import importlib as _importlib
+
 from .. import answerdb as _answerdb
+
+
+INTERFACES = ['cli']
 
 
 class UserInterface (object):
@@ -44,3 +49,21 @@ class UserInterface (object):
             for qid in reversed(question.dependencies):
                 self.stack.insert(0, self.quiz.get(id=qid))
         return correct
+
+
+def get_ui(name):
+    """Get the UserInterface subclass from a UI submodule
+
+    >>> get_ui('cli')
+    <class 'quizzer.ui.cli.CommandLineInterface'>
+    """
+    module = _importlib.import_module('{}.{}'.format(__name__, name))
+    for name in dir(module):
+        obj = getattr(module, name)
+        try:
+            subclass = issubclass(obj, UserInterface)
+        except TypeError as e:  # obj is not a class
+            continue
+        if subclass:
+            return obj
+    raise ValueError(name)

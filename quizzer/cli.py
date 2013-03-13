@@ -21,7 +21,7 @@ from . import __doc__ as _module_doc
 from . import __version__
 from . import answerdb as _answerdb
 from . import quiz as _quiz
-from .ui import cli as _cli
+from . import ui as _ui
 
 
 def main():
@@ -51,6 +51,9 @@ def main():
         '--questions', action='store_const', const=True, default=False,
         help=('instead of running the quiz, '
               'print a list of questions on the stack'))
+    parser.add_argument(
+        '-u', '--ui', choices=_ui.INTERFACES, default=_ui.INTERFACES[0],
+        help='select a user interface')
     parser.add_argument(
         'quiz', metavar='QUIZ',
         help='path to a quiz file')
@@ -85,7 +88,8 @@ def main():
             print(q.format_prompt())
             print()
         return
-    ui = _cli.CommandLineInterface(quiz=quiz, answers=answers, stack=stack)
+    ui_class = _ui.get_ui(args.ui)
+    ui = ui_class(quiz=quiz, answers=answers, stack=stack)
     try:
         ui.run()
     finally:
