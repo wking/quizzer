@@ -19,7 +19,7 @@ import importlib as _importlib
 from .. import answerdb as _answerdb
 
 
-INTERFACES = ['cli']
+INTERFACES = ['cli', 'wsgi']
 
 
 class UserInterface (object):
