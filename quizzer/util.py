@@ -22,9 +22,6 @@ import tempfile as _tempfile
 from . import error as _error
 
 
-LOG = _logging.getLogger(__name__)
-
-
 def invoke(args, stdin=None, stdout=_subprocess.PIPE, stderr=_subprocess.PIPE,
            universal_newlines=False, timeout=None, expect=None, **kwargs):
     if stdin:
@@ -63,7 +60,6 @@ def invocation_difference(a_status, a_stdout, a_stderr,
         ('stdout', a_stdout, b_stdout),
         ]:
         if a != b:
-            LOG.info(format_invocation_difference(name=name, a=a, b=b))
             return (name, a, b)
 
 def format_invocation_difference(name, a, b):

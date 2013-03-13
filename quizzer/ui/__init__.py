@@ -42,13 +42,13 @@ class UserInterface (object):
             return self.stack.pop(0)
 
     def process_answer(self, question, answer, **kwargs):
-        correct = question.check(answer=answer, **kwargs)
+        correct,details = question.check(answer=answer, **kwargs)
         self.answers.add(question=question, answer=answer, correct=correct)
         if not correct:
             self.stack.insert(0, question)
             for qid in reversed(question.dependencies):
                 self.stack.insert(0, self.quiz.get(id=qid))
-        return correct
+        return (correct, details)
 
 
 def get_ui(name):

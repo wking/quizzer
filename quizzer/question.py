@@ -71,7 +71,12 @@ class Question (object):
         self.__dict__.update(state)
 
     def check(self, answer):
-        return answer == self.answer
+        correct = answer == self.answer
+        details = None
+        if not correct:
+            details = 'answer ({}) does not match expected value'.format(
+                answer)
+        return (correct, details)
 
     def _format_attribute(self, attribute, newline='\n'):
         value = getattr(self, attribute)
@@ -91,12 +96,23 @@ class NormalizedStringQuestion (Question):
         return string.strip().lower()
 
     def check(self, answer):
-        return self.normalize(answer) == self.normalize(self.answer)
+        normalized_answer = self.normalize(answer)
+        correct = normalized_answer == self.normalize(self.answer)
+        details = None
+        if not correct:
+            details = ('normalized answer ({}) does not match expected value'
+                       ).format(normalized_answer)
+        return (correct, details)
 
 
 class ChoiceQuestion (Question):
     def check(self, answer):
-        return answer in self.answer
+        correct = answer in self.answer
+        details = None
+        if not correct:
+            details = 'answer ({}) is not in list of expected values'.format(
+                answer)
+        return (correct, details)
 
 
 class ScriptQuestion (Question):
@@ -208,6 +224,7 @@ class ScriptQuestion (Question):
         Arguments are passed through to ._invoke() for calculating the
         user's response.
         """
+        details = None
         # figure out the expected values
         (ea_status,ea_stdout,ea_stderr,
          et_status,et_stdout,et_stderr) = self._invoke(answer=self.answer)
@@ -218,25 +235,29 @@ class ScriptQuestion (Question):
                 answer=answer, tempdir=tempdir)
         except (KeyboardInterrupt, _error.CommandError) as e:
             if isinstance(e, KeyboardInterrupt):
-                LOG.warning('KeyboardInterrupt')
+                details = 'KeyboardInterrupt'
             else:
-                LOG.warning(e)
-            return False
+                details = str(e)
+            return (False, details)
         # compare user-generated output with expected values
         if answer:
             if self.compare_answers:
-                if _util.invocation_difference(  # compare answers
-                        ea_status, ea_stdout, ea_stderr,
-                        ua_status, ua_stdout, ua_stderr):
-                    return False
+                difference = _util.invocation_difference(  # compare answers
+                    ea_status, ea_stdout, ea_stderr,
+                    ua_status, ua_stdout, ua_stderr)
+                if difference:
+                    details = _util.format_invocation_difference(*difference)
+                    return (False, details)
             elif ua_stderr:
                 LOG.warning(ua_stderr)
-        if _util.invocation_difference(  # compare teardown
-                et_status, et_stdout, et_stderr,
-                ut_status, ut_stdout, ut_stderr):
-            return False
-        return True
-        
+        difference = _util.invocation_difference(  # compare teardown
+            et_status, et_stdout, et_stderr,
+            ut_status, ut_stdout, ut_stderr)
+        if difference:
+            details = _util.format_invocation_difference(*difference)
+            return (False, details)
+        return (True, None)
+
 
 for name,obj in list(locals().items()):
     if name.startswith('_'):

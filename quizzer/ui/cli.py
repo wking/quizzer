@@ -98,12 +98,17 @@ class QuestionCommandLine (_cmd.Cmd):
         kwargs = {}
         if self._tempdir:
             kwargs['tempdir'] = self._tempdir
-        correct = self.ui.process_answer(
+        correct,details = self.ui.process_answer(
             question=self.question, answer=answer, **kwargs)
         if correct:
             print(_colorize(self.ui.colors['correct'], 'correct\n'))
         else:
-            print(_colorize(self.ui.colors['incorrect'], 'incorrect\n'))
+            print(_colorize(self.ui.colors['incorrect'], 'incorrect'))
+            if details:
+                print(_colorize(
+                        self.ui.colors['incorrect'], '{}\n'.format(details)))
+            else:
+                print('')
         return self.get_question()
 
     def do_answer(self, arg):
