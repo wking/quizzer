@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # quizzer.  If not, see <http://www.gnu.org/licenses/>.
 
+import collections as _collections
 import importlib as _importlib
 
 from .. import answerdb as _answerdb
@@ -32,22 +33,27 @@ class UserInterface (object):
         if stack is None:
             stack = self.answers.get_never_correctly_answered(
                 questions=quiz.leaf_questions())
-        self.stack = stack
+        self._stack = stack
+        self.stack = _collections.defaultdict(self._new_stack)
+
+    def _new_stack(self):
+        return list(self._stack)  # make a new copy for a new user
 
     def run(self):
         raise NotImplementedError()
 
-    def get_question(self):
-        if self.stack:
-            return self.stack.pop(0)
+    def get_question(self, user=None):
+        if self.stack[user]:
+            return self.stack[user].pop(0)
 
-    def process_answer(self, question, answer, **kwargs):
+    def process_answer(self, question, answer, user=None, **kwargs):
         correct,details = question.check(answer=answer, **kwargs)
-        self.answers.add(question=question, answer=answer, correct=correct)
+        self.answers.add(
+            question=question, answer=answer, correct=correct, user=user)
         if not correct:
-            self.stack.insert(0, question)
+            self.stack[user].insert(0, question)
             for qid in reversed(question.dependencies):
-                self.stack.insert(0, self.quiz.get(id=qid))
+                self.stack[user].insert(0, self.quiz.get(id=qid))
         return (correct, details)
 
 

@@ -116,6 +116,7 @@ class QuestionApp (WSGI_DataObject):
             (_re.compile('^results/'), self._results),
             ]
         self.setting = 'quizzer'
+        self.user_regexp = _re.compile('^\w+$')
 
     def __call__(self, environ, start_response):
         "WSGI entry point"
@@ -129,12 +130,6 @@ class QuestionApp (WSGI_DataObject):
         raise HandlerError(404, 'Not Found')
 
     def _index(self, environ, start_response):
-        if self.ui.stack:
-            return self._start(environ, start_response)
-        else:
-            return self._results(environ, start_response)
-
-    def _start(self, environ, start_response):
         lines = [
             '<html>',
             '  <head>',
@@ -146,7 +141,11 @@ class QuestionApp (WSGI_DataObject):
         if self.ui.quiz.introduction:
             lines.append('    <p>{}</p>'.format(self.ui.quiz.introduction))
         lines.extend([
-                '    <p><a href="question/">Start the quiz</a>.</p>',
+                '    <form name="question" action="../question/" method="post">',
+                '      <p>Username: <input type="text" size="20" name="user">',
+                '        (required, alphanumeric)</p>',
+                '      <input type="submit" value="Start the quiz">',
+                '    </form>',
                 '  </body>',
                 '</html>',
                 ])
@@ -156,6 +155,10 @@ class QuestionApp (WSGI_DataObject):
             content_type='text/html')
 
     def _results(self, environ, start_response):
+        data = self.post_data(environ)
+        user = data.get('user', '')
+        if not self.user_regexp.match(user):
+            raise HandlerError(303, 'See Other', headers=[('Location', '/')])
         lines = [
             '<html>',
             '  <head>',
@@ -164,10 +167,11 @@ class QuestionApp (WSGI_DataObject):
             '  <body>',
             '    <h1>Results</h1>',
             ]
+        answers = self.ui.answers.get_answers(user=user)
         for question in self.ui.quiz:
-            if question.id in self.ui.answers:
-                lines.extend(self._format_result(question=question))
-        lines.extend(self._format_totals())
+            if question.id in answers:
+                lines.extend(self._format_result(question=question, user=user))
+        lines.extend(self._format_totals(user=user))
         lines.extend([
                 '  </body>',
                 '</html>',
@@ -177,8 +181,8 @@ class QuestionApp (WSGI_DataObject):
             environ, start_response, content=content, encoding='utf-8',
             content_type='text/html')
 
-    def _format_result(self, question):
-        answers = self.ui.answers.get(question.id, [])
+    def _format_result(self, question, user):
+        answers = self.ui.answers.get_answers(user=user).get(question.id, [])
         la = len(answers)
         lc = len([a for a in answers if a['correct']])
         lines = [
@@ -206,10 +210,11 @@ class QuestionApp (WSGI_DataObject):
             lines.append('</ol>')
         return lines
 
-    def _format_totals(self):
-        answered = self.ui.answers.get_answered(questions=self.ui.quiz)
+    def _format_totals(self, user=None):
+        answered = self.ui.answers.get_answered(
+            questions=self.ui.quiz, user=user)
         correctly_answered = self.ui.answers.get_correctly_answered(
-            questions=self.ui.quiz)
+            questions=self.ui.quiz, user=user)
         la = len(answered)
         lc = len(correctly_answered)
         return [
@@ -225,13 +230,17 @@ class QuestionApp (WSGI_DataObject):
             data = self.post_data(environ)
         else:
             data = {}
+        user = data.get('user', '')
+        if not self.user_regexp.match(user):
+            raise HandlerError(303, 'See Other', headers=[('Location', '/')])
         question = data.get('question', None)
         if not question:
-            question = self.ui.get_question()
+            question = self.ui.get_question(user=user)
             # put the question back on the stack until it's answered
-            self.ui.stack.insert(0, question)
+            self.ui.stack[user].insert(0, question)
         if question is None:
-            return self._index(environ, start_response)
+            raise HandlerError(
+                307, 'Temporary Redirect', headers=[('Location', '/results/')])
         if question.multiline:
             answer_element = (
                 '<textarea rows="5" cols="60" name="answer"></textarea>')
@@ -245,6 +254,7 @@ class QuestionApp (WSGI_DataObject):
             '  <body>',
             '    <h1>Question</h1>',
             '    <form name="question" action="../answer/" method="post">',
+            '      <input type="hidden" name="user" value="{}">'.format(user),
             '      <input type="hidden" name="question" value="{}">'.format(
                 question.id),
             '      <p>{}</p>'.format(
@@ -264,6 +274,9 @@ class QuestionApp (WSGI_DataObject):
 
     def _answer(self, environ, start_response):
         data = self.post_data(environ)
+        user = data.get('user', '')
+        if not self.user_regexp.match(user):
+            raise HandlerError(303, 'See Other', headers=[('Location', '/')])
         question_id = data.get('question', None)
         raw_answer = data.get('answer', None)
         if not question_id or not raw_answer:
@@ -278,12 +291,13 @@ class QuestionApp (WSGI_DataObject):
         else:
             answer = raw_answer
         correct,details = self.ui.process_answer(
-            question=question, answer=answer)
+            question=question, answer=answer, user=user)
         link_target = '../question/'
         if correct:
             correct_msg = 'correct'
-            self.ui.stack = [q for q in self.ui.stack if q != question]
-            if self.ui.stack:
+            self.ui.stack[user] = [q for q in self.ui.stack[user]
+                                   if q != question]
+            if self.ui.stack[user]:
                 link_text = 'Next question'
             else:
                 link_text = 'Results'
@@ -305,7 +319,11 @@ class QuestionApp (WSGI_DataObject):
             '    <pre>{}</pre>'.format(raw_answer),
             '    <p>{}</p>'.format(correct_msg),
             details or '',
-            '    <a href="{}">{}</a>.'.format(link_target, link_text),
+            '    <form name="question" action="{}" method="post">'.format(
+                link_target),
+            '      <input type="hidden" name="user" value="{}">'.format(user),
+            '      <input type="submit" value="{}">'.format(link_text),
+            '    </form>',
             '  </body>',
             '</html>',
             '',

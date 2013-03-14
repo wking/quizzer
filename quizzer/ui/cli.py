@@ -48,7 +48,7 @@ class QuestionCommandLine (_cmd.Cmd):
         self._tempdir = None
 
     def get_question(self):
-        self.question = self.ui.get_question()
+        self.question = self.ui.get_question(user=self.ui.user)
         if self.question:
             self._reset()
         else:
@@ -154,7 +154,7 @@ class QuestionCommandLine (_cmd.Cmd):
 
     def do_skip(self, arg):
         "Skip the current question, and continue with the quiz"
-        self.ui.stack.append(self.question)
+        self.ui.stack[self.ui.user].append(self.question)
         return self.get_question()
 
     def do_hint(self, arg):
@@ -186,7 +186,8 @@ class CommandLineInterface (_UserInterface):
         }
 
     def run(self):
-        if self.stack:
+        self.user = None
+        if self.stack[self.user]:
             cmd = QuestionCommandLine(ui=self)
             cmd.cmdloop()
             print()
@@ -194,14 +195,15 @@ class CommandLineInterface (_UserInterface):
 
     def _display_results(self):
         print(_colorize(self.colors['result'], 'results:'))
+        answers = self.answers.get_answers(user=self.user)
         for question in self.quiz:
-            if question.id in self.answers:
+            if question.id in answers:
                 self._display_result(question=question)
                 print()
         self._display_totals()
 
     def _display_result(self, question):
-        answers = self.answers.get(question.id, [])
+        answers = self.answers.get_answers(user=self.user).get(question.id, [])
         print('question:')
         print('  {}'.format(
             _colorize(
@@ -224,9 +226,10 @@ class CommandLineInterface (_UserInterface):
             print('     which was: {}'.format(correct))
 
     def _display_totals(self):
-        answered = self.answers.get_answered(questions=self.quiz)
+        answered = self.answers.get_answered(
+            questions=self.quiz, user=self.user)
         correctly_answered = self.answers.get_correctly_answered(
-            questions=self.quiz)
+            questions=self.quiz, user=self.user)
         la = len(answered)
         lc = len(correctly_answered)
         print('answered {} of {} questions'.format(la, len(self.quiz)))

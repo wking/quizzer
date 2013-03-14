@@ -47,44 +47,75 @@ class AnswerDatabase (dict):
                         version, __version__)) from e
             data = upgrader(data)
         self.update(data['answers'])
+        if '' in self:
+            self[None] = self.pop('')
 
     def save(self, **kwargs):
+        answers = dict(self)
+        if None in answers:
+            answers[''] = answers.pop(None)
         data = {
             'version': __version__,
-            'answers': self,
+            'answers': answers,
             }
         with self._open(mode='w', **kwargs) as f:
             _json.dump(
                 data, f, indent=2, separators=(',', ': '), sort_keys=True)
             f.write('\n')
 
-    def add(self, question, answer, correct):
-        if question.id not in self:
-            self[question.id] = []
+    def add(self, question, answer, correct, user=None):
+        if user == '':
+            raise ValueError('the empty string is an invalid username')
+        if user not in self:
+            self[user] = {}
+        if question.id not in self[user]:
+            self[user][question.id] = []
         timezone = _datetime.timezone.utc
         timestamp = _datetime.datetime.now(tz=timezone).isoformat()
-        self[question.id].append({
+        self[user][question.id].append({
                 'answer': answer,
                 'correct': correct,
                 'timestamp': timestamp,
                 })
 
-    def get_answered(self, questions):
-        return [q for q in questions if q.id in self]
+    def get_answers(self, user=None):
+        if user == '':
+            raise ValueError('the empty string is an invalid username')
+        return self.get(user, {})
 
-    def get_unanswered(self, questions):
-        return [q for q in questions if q.id not in self]
+    def _get_questions(self, check, questions, user=None):
+        if user == '':
+            raise ValueError('the empty string is an invalid username')
+        answers = self.get_answers(user=user)
+        return [q for q in questions if check(question=q, answers=answers)]
 
-    def get_correctly_answered(self, questions):
-        return [q for q in questions
-                if True in [a['correct'] for a in self.get(q.id, [])]]
+    def get_answered(self, **kwargs):
+        return self._get_questions(
+            check=lambda question, answers: question.id in answers,
+            **kwargs)
 
-    def get_never_correctly_answered(self, questions):
-        return [q for q in questions
-                if True not in [a['correct'] for a in self.get(q.id, [])]]
+    def get_unanswered(self, **kwargs):
+        return self._get_questions(
+            check=lambda question, answers: question.id not in answers,
+            **kwargs)
+
+    def get_correctly_answered(self, **kwargs):
+        return self._get_questions(
+            check=lambda question, answers:
+                True in [a['correct'] for a in answers.get(question.id, [])],
+            **kwargs)
+
+    def get_never_correctly_answered(self, **kwargs):
+        return self._get_questions(
+            check=lambda question, answers:
+                True not in [a['correct']
+                             for a in answers.get(question.id, [])],
+            **kwargs)
 
     def _upgrade_from_0_1(self, data):
         data['version'] = __version__
+        data['answers'] = {'': data['answers']}  # add user-id key
         return data
 
     _upgrade_from_0_2 = _upgrade_from_0_1
+    _upgrade_from_0_3 = _upgrade_from_0_1
