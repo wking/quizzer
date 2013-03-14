@@ -1,0 +1,125 @@
+{
+	"version": "0.3",
+	"copyright": [
+		"Copyright (C) 2013 Greg Wilson <gvwilson@third-bit.com>",
+		"",
+		"The questions for this quiz are CC BY 3.0 Unported",
+		"http://creativecommons.org/licenses/by/3.0/"
+		],
+	"introduction": "Pre-assessment for Software Carpentry boot camps.  Better scientist training through science!",
+	"questions": [
+		{
+			"class": "ChoiceQuestion",
+			"prompt": "Career stage",
+			"display_choices": true,
+			"answer": [
+				"Undergrad",
+				"Grad",
+				"Post-doc",
+				"Faculty",
+				"Industry",
+				"Support staff"
+			]
+		},
+		{
+			"class": "ChoiceQuestion",
+			"prompt": "Discipline",
+			"display_choices": true,
+			"accept_all": true,
+			"answer": [
+				"Space science",
+				"Physics",
+				"Chemistry",
+				"Earth science (geology, oceanography, meteorology)",
+				"Life science (ecology and organisms)",
+				"Life science (cells and genes)",
+				"Brain and neurosciences",
+				"Medicine",
+				"Engineering (civil, mechanical, chemical)",
+				"Computer science/electrical engineering",
+				"Economics",
+				"Humanities/social sciences",
+				"Tech support/lab tech/support programmer",
+				"Admin"
+			]
+		},
+		{
+			"class": "ChoiceQuestion",
+			"prompt": "Platform",
+			"display_choices": true,
+			"accept_all": true,
+			"answer": [
+				"Linux",
+				"Apple OS X",
+				"Microsoft Windows"
+			]
+		},
+		{
+			"class": "ChoiceQuestion",
+			"prompt": "How do you usually store files that you update?",
+			"display_choices": true,
+			"accept_all": true,
+			"answer": [
+				"Save over the current version in the same file, or add.",
+				"Add some date information in the filename and/or use directories with version information.",
+				"Use a version control system like Subversion, Git, Mercurial, etc."
+			]
+		},
+		{
+			"class": "ChoiceQuestion",
+			"prompt": "A tab-delimited file has two columns: the date, and the highest temperature on that day. Produce a graph showing the average highest temperature for each month.",
+			"display_choices": true,
+			"answer": [
+				"Could do it easily",
+				"Would recognize a correct solution if I saw one",
+				"Could struggle through",
+				"Wouldn't know where to start"
+			]
+		},
+		{
+			"class": "Question",
+			"prompt": "A tab-delimited file has two columns: the date, and the highest temperature on that day. What language/tool would you use to produce a graph showing the average highest temperature for each month?",
+			"display_choices": true,
+			"accept_all": true
+		},
+		{
+			"class": "ChoiceQuestion",
+			"prompt": "Write a short program to read a file containing columns of numbers separated by commas, average the non-negative values in the second and fifth columns, and print the results.",
+			"display_choices": true,
+			"answer": [
+				"Could do it easily",
+				"Would recognize a correct solution if I saw one",
+				"Could struggle through",
+				"Wouldn't know where to start"
+			]
+		},
+		{
+			"class": "Question",
+			"prompt": "What language/tool would you use to read a file containing columns of numbers separated by commas, average the non-negative values in the second and fifth columns, and print the results?",
+			"display_choices": true,
+			"accept_all": true
+		},
+		{
+			"class": "ChoiceQuestion",
+			"prompt": "In a directory with 1000 text files, create a list of all files that contain the word Drosophila, and redirect the output to a file called results.txt.",
+			"display_choices": true,
+			"answer": [
+				"Could do it easily",
+				"Would recognize a correct solution if I saw one",
+				"Could struggle through",
+				"Wouldn't know where to start"
+			]
+		},
+		{
+			"class": "ChoiceQuestion",
+			"prompt": "A database has two tables Scientist and Lab. The Scientist table's columns are the scientist's student ID, name, and email address; the Lab table's columns are lab names, lab IDs, and scientist IDs. Write an SQL statement that outputs a count of the number of scientists in each lab.",
+			"display_choices": true,
+			"answer": [
+				"Could do it easily",
+				"Would recognize a correct solution if I saw one",
+				"Could struggle through",
+				"Wouldn't know where to start"
+			]
+		}
+	]
+}
