@@ -244,10 +244,15 @@ class QuestionApp (WSGI_DataObject):
                 307, 'Temporary Redirect', headers=[('Location', '/results/')])
         if (isinstance(question, _question.ChoiceQuestion) and
                 question.display_choices):
-            answer_element = '\n'.join(
+            choices = [
                 ('<input type="radio" name="answer" value="{0}"/>{0}<br/>'
                  ).format(answer)
-                for answer in question.answer)
+                for answer in question.answer]
+            if question.open_ended:
+                choices.extend([
+                    '<input type="radio" name="answer" value="open_ended"/>',
+                    '<input type="text" size="60" name="answer-other"/>'])
+            answer_element = '\n'.join(choices)
         elif question.multiline:
             answer_element = (
                 '<textarea rows="5" cols="60" name="answer"></textarea>')
@@ -293,10 +298,16 @@ class QuestionApp (WSGI_DataObject):
             question = self.ui.quiz.get(id=question_id)
         except KeyError as e:
             raise HandlerError(404, 'Not Found') from e
-        if question.multiline:
+        if (isinstance(question, _question.ChoiceQuestion) and
+                question.display_choices and
+                question.open_ended and
+                raw_answer == 'open_ended'):
+            answer = print_answer = data.get('answer-other', None)
+        elif question.multiline:
             answer = raw_answer.splitlines()
+            print_answer = raw_answer
         else:
-            answer = raw_answer
+            answer = print_answer = raw_answer
         correct,details = self.ui.process_answer(
             question=question, answer=answer, user=user)
         link_target = '../question/'
@@ -323,7 +334,7 @@ class QuestionApp (WSGI_DataObject):
             '    <h1>Answer</h1>',
             '    <p>{}</p>'.format(
                 question.format_prompt(newline='<br/>')),
-            '    <pre>{}</pre>'.format(raw_answer),
+            '    <pre>{}</pre>'.format(print_answer),
             '    <p>{}</p>'.format(correct_msg),
             details or '',
             '    <form name="question" action="{}" method="post">'.format(

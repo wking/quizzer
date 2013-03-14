@@ -108,15 +108,17 @@ class NormalizedStringQuestion (Question):
 class ChoiceQuestion (Question):
     _state_attributes = Question._state_attributes + [
         'display_choices',
+        'open_ended',
         ]
 
     def __setstate__(self, state):
-        if 'display_choices' not in state:
-            state['display_choices'] = False
+        for key in ['display_choices', 'open_ended']:
+            if key not in state:
+                state[key] = False
         super(ChoiceQuestion, self).__setstate__(state)
 
     def check(self, answer):
-        correct = answer in self.answer
+        correct = answer in self.answer or self.open_ended
         details = None
         if not correct:
             details = 'answer ({}) is not in list of expected values'.format(

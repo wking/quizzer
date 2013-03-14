@@ -90,6 +90,8 @@ class QuestionCommandLine (_cmd.Cmd):
                 self.question.display_choices):
             for i,choice in enumerate(self.question.answer):
                 yield '{}) {}'.format(i, choice)
+            if self.question.open_ended:
+                yield 'or fill in something else'
         return []
 
     def _process_answer(self, answer):
