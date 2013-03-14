@@ -28,6 +28,7 @@ except ImportError as e:
     print(e)
 
 from .. import error as _error
+from .. import question as _question
 from . import UserInterface as _UserInterface
 
 
@@ -67,16 +68,40 @@ class QuestionCommandLine (_cmd.Cmd):
     def _set_ps1(self):
         "Pose a question and prompt"
         if self.question:
-            self.prompt = '\n{}\n{}'.format(
+            lines = [
+                '',
                 _colorize(
                     self.ui.colors['question'], self.question.format_prompt()),
-                _colorize(self.ui.colors['prompt'], self._prompt))
+                ]
+            lines.extend(
+                _colorize(self.ui.colors['prompt'], line)
+                for line in self._extra_ps1_lines())
+            lines.append(_colorize(self.ui.colors['prompt'], self._prompt))
+            self.prompt = '\n'.join(lines)
         else:
             self.prompt = _colorize(self.ui.colors['prompt'], self._prompt)
 
     def _set_ps2(self):
         "Just prompt (without the question, e.g. for multi-line answers)"
         self.prompt = _colorize(self.ui.colors['prompt'], self._prompt)
+
+    def _extra_ps1_lines(self):
+        if (isinstance(self.question, _question.ChoiceQuestion) and
+                self.question.display_choices):
+            for i,choice in enumerate(self.question.answer):
+                yield '{}) {}'.format(i, choice)
+        return []
+
+    def _process_answer(self, answer):
+        "Back out any mappings suggested by _extra_ps1_lines()"
+        if (isinstance(self.question, _question.ChoiceQuestion) and
+                self.question.display_choices):
+            try:
+                a = int(answer)
+                return self.question.answer[a]
+            except (ValueError, IndexError):
+                pass
+        return answer
 
     def default(self, line):
         self.answers.append(line)
@@ -98,6 +123,7 @@ class QuestionCommandLine (_cmd.Cmd):
         kwargs = {}
         if self._tempdir:
             kwargs['tempdir'] = self._tempdir
+        answer = self._process_answer(answer=answer)
         correct,details = self.ui.process_answer(
             question=self.question, answer=answer, **kwargs)
         if correct:

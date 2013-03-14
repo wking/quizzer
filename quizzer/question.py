@@ -106,6 +106,15 @@ class NormalizedStringQuestion (Question):
 
 
 class ChoiceQuestion (Question):
+    _state_attributes = Question._state_attributes + [
+        'display_choices',
+        ]
+
+    def __setstate__(self, state):
+        if 'display_choices' not in state:
+            state['display_choices'] = False
+        super(ChoiceQuestion, self).__setstate__(state)
+
     def check(self, answer):
         correct = answer in self.answer
         details = None

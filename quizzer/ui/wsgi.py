@@ -7,6 +7,7 @@ import re as _re
 import urllib.parse as _urllib_parse
 import wsgiref.simple_server as _wsgiref_simple_server
 
+from .. import question as _question
 from . import UserInterface as _UserInterface
 
 
@@ -241,7 +242,13 @@ class QuestionApp (WSGI_DataObject):
         if question is None:
             raise HandlerError(
                 307, 'Temporary Redirect', headers=[('Location', '/results/')])
-        if question.multiline:
+        if (isinstance(question, _question.ChoiceQuestion) and
+                question.display_choices):
+            answer_element = '\n'.join(
+                ('<input type="radio" name="answer" value="{0}"/>{0}<br/>'
+                 ).format(answer)
+                for answer in question.answer)
+        elif question.multiline:
             answer_element = (
                 '<textarea rows="5" cols="60" name="answer"></textarea>')
         else:
