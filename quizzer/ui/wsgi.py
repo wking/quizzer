@@ -245,7 +245,7 @@ class QuestionApp (WSGI_DataObject):
             answer_element = (
                 '<textarea rows="5" cols="60" name="answer"></textarea>')
         else:
-            answer_element = '<input type="text" size="60" name="answer">'
+            answer_element = '<input type="text" size="60" name="answer"/>'
         lines = [
             '<html>',
             '  <head>',
