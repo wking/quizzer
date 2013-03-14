@@ -34,6 +34,7 @@ class Question (object):
         'id',
         'prompt',
         'answer',
+        'accept_all',
         'multiline',
         'help',
         'dependencies',
@@ -57,20 +58,26 @@ class Question (object):
     def __setstate__(self, state):
         if 'id' not in state:
             state['id'] = state.get('prompt', None)
-        if 'multiline' not in state:
-            state['multiline'] = False
         if 'dependencies' not in state:
             state['dependencies'] = []
         if 'tags' not in state:
             state['tags'] = set()
         else:
             state['tags'] = set(state['tags'])
+        for attr in ['accept_all', 'multiline']:
+            if attr not in state:
+                state[attr] = False
         for attr in self._state_attributes:
             if attr not in state:
                 state[attr] = None
         self.__dict__.update(state)
 
     def check(self, answer):
+        if self.accept_all:
+            return (True, None)
+        return self._check(answer)
+
+    def _check(self, answer):
         correct = answer == self.answer
         details = None
         if not correct:
@@ -95,7 +102,7 @@ class NormalizedStringQuestion (Question):
     def normalize(self, string):
         return string.strip().lower()
 
-    def check(self, answer):
+    def _check(self, answer):
         normalized_answer = self.normalize(answer)
         correct = normalized_answer == self.normalize(self.answer)
         details = None
@@ -108,17 +115,16 @@ class NormalizedStringQuestion (Question):
 class ChoiceQuestion (Question):
     _state_attributes = Question._state_attributes + [
         'display_choices',
-        'open_ended',
         ]
 
     def __setstate__(self, state):
-        for key in ['display_choices', 'open_ended']:
+        for key in ['display_choices']:
             if key not in state:
                 state[key] = False
         super(ChoiceQuestion, self).__setstate__(state)
 
-    def check(self, answer):
-        correct = answer in self.answer or self.open_ended
+    def _check(self, answer):
+        correct = answer in self.answer
         details = None
         if not correct:
             details = 'answer ({}) is not in list of expected values'.format(
@@ -229,7 +235,7 @@ class ScriptQuestion (Question):
         return (a_status,a_stdout,a_stderr,
                 t_status,t_stdout,t_stderr)
 
-    def check(self, answer=None, tempdir=None):
+    def _check(self, answer=None, tempdir=None):
         """Compare the user's answer with expected values
 
         Arguments are passed through to ._invoke() for calculating the

@@ -248,9 +248,9 @@ class QuestionApp (WSGI_DataObject):
                 ('<input type="radio" name="answer" value="{0}"/>{0}<br/>'
                  ).format(answer)
                 for answer in question.answer]
-            if question.open_ended:
+            if question.accept_all:
                 choices.extend([
-                    '<input type="radio" name="answer" value="open_ended"/>',
+                    '<input type="radio" name="answer" value="answer-other"/>',
                     '<input type="text" size="60" name="answer-other"/>'])
             answer_element = '\n'.join(choices)
         elif question.multiline:
@@ -300,8 +300,8 @@ class QuestionApp (WSGI_DataObject):
             raise HandlerError(404, 'Not Found') from e
         if (isinstance(question, _question.ChoiceQuestion) and
                 question.display_choices and
-                question.open_ended and
-                raw_answer == 'open_ended'):
+                question.accept_all and
+                raw_answer == 'answer-other'):
             answer = print_answer = data.get('answer-other', None)
         elif question.multiline:
             answer = raw_answer.splitlines()
