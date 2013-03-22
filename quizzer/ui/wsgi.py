@@ -244,13 +244,18 @@ class QuestionApp (WSGI_DataObject):
                 307, 'Temporary Redirect', headers=[('Location', '/results/')])
         if (isinstance(question, _question.ChoiceQuestion) and
                 question.display_choices):
+            if question.multiple_answers:
+                itype = 'checkbox'
+            else:
+                itype = 'radio'
             choices = [
-                ('<input type="radio" name="answer" value="{0}"/>{0}<br/>'
-                 ).format(answer)
+                ('<input type="{0}" name="answer" value="{1}"/>{1}<br/>'
+                 ).format(itype, answer)
                 for answer in question.answer]
             if question.accept_all:
                 choices.extend([
-                    '<input type="radio" name="answer" value="answer-other"/>',
+                    ('<input type="{}" name="answer" value="answer-other"/>'
+                     ).format(itype),
                     '<input type="text" size="60" name="answer-other"/>'])
             answer_element = '\n'.join(choices)
         elif question.multiline:
@@ -300,9 +305,15 @@ class QuestionApp (WSGI_DataObject):
             raise HandlerError(404, 'Not Found') from e
         if (isinstance(question, _question.ChoiceQuestion) and
                 question.display_choices and
-                question.accept_all and
-                raw_answer == 'answer-other'):
-            answer = print_answer = data.get('answer-other', None)
+                question.accept_all):
+            if raw_answer == 'answer-other':
+                answer = print_answer = data.get('answer-other', None)
+            elif 'answer-other' in raw_answer:
+                i = raw_answer.index('answer-other')
+                raw_answer[i] = data.get('answer-other', None)
+                answer = print_answer = raw_answer
+            else:
+                answer = print_answer = raw_answer
         elif question.multiline:
             answer = raw_answer.splitlines()
             print_answer = raw_answer

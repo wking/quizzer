@@ -90,19 +90,37 @@ class QuestionCommandLine (_cmd.Cmd):
                 self.question.display_choices):
             for i,choice in enumerate(self.question.answer):
                 yield '{}) {}'.format(i, choice)
+            yield 'Answer with the index of your choice'
             if self.question.accept_all:
-                yield 'or fill in something else'
+                conj = 'or'
+                if self.question.multiple_answers:
+                    conj = 'and/or'
+                yield '{} fill in an alternative answer'.format(conj)
+            if self.question.multiple_answers:
+                self._separator = ','
+                yield ("Separate multiple answers with the '{}' character"
+                       ).format(self._separator)
         return []
 
     def _process_answer(self, answer):
         "Back out any mappings suggested by _extra_ps1_lines()"
         if (isinstance(self.question, _question.ChoiceQuestion) and
                 self.question.display_choices):
-            try:
-                a = int(answer)
-                return self.question.answer[a]
-            except (ValueError, IndexError):
-                pass
+            if self.question.multiple_answers:
+                answers = []
+                for a in answer.split(self._separator):
+                    try:
+                        i = int(a)
+                        answers.append(self.question.answer[i])
+                    except (ValueError, IndexError):
+                        answers.append(a)
+                return answers
+            else:
+                try:
+                    i = int(answer)
+                    return self.question.answer[i]
+                except (ValueError, IndexError):
+                    pass
         return answer
 
     def default(self, line):
