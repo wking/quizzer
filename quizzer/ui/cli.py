@@ -122,6 +122,10 @@ class QuestionCommandLine (_cmd.Cmd):
             answer = self.answers[0]
         else:
             answer = ''
+        if answer == 'EOF':
+            return True  # quit
+        if answer == '':
+            return
         kwargs = {}
         if self._tempdir:
             kwargs['tempdir'] = self._tempdir
