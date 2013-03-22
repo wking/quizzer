@@ -47,6 +47,7 @@
 			"class": "ChoiceQuestion",
 			"prompt": "Platform",
 			"display_choices": true,
+			"multiple_answers": true,
 			"accept_all": true,
 			"answer": [
 				"Linux",
