@@ -73,3 +73,23 @@ is your quest?”).
 
 Quizzer requires Python ≥ 3.3.  If Pygments is installed, the command
 line prompt will be colored.
+
+Types of questions:
+
+* ``Question``: An open ended question with a single correct answer
+  (or accepting any answer).
+* ``NormalizedStringQuestion``: Like ``Question``, but normalizes the
+  given answer with ``string.strip().lower()`` before comparing with
+  the correct answer.
+* ``ChoiceQuestion``: A question with multiple valid answers.  With
+  ``display_choices``, this is a standard multiple choice question.
+  With ``multiple_answers``, it is “chose all that apply”.
+* ``ScriptQuestion``: A question which checks scripting answers by
+  running the given answer and correct answer in temporary
+  directories.  There are hooks for setting up and tearing down the
+  temporary directories, and we judge success by comparing the output
+  of the teardown phase (and optionally the output of the answer
+  phase).  You can optionally set a timeout to catch answers that
+  hang.  There is no sandboxing (other than working in a scratch
+  directory), so it's not a good idea to serve questions like this on
+  a public interface (stick to ``cli``).
