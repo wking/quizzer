@@ -100,7 +100,6 @@ class QuestionCommandLine (_cmd.Cmd):
                 self._separator = ','
                 yield ("Separate multiple answers with the '{}' character"
                        ).format(self._separator)
-        return []
 
     def _process_answer(self, answer):
         "Back out any mappings suggested by _extra_ps1_lines()"
