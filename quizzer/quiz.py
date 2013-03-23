@@ -97,3 +97,4 @@ class Quiz (list):
         return data
 
     _upgrade_from_0_2 = _upgrade_from_0_1
+    _upgrade_from_0_3 = _upgrade_from_0_1

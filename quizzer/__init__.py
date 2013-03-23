@@ -20,7 +20,7 @@
 import logging as _logging
 
 
-__version__ = '0.3'
+__version__ = '0.4'
 
 LOG = _logging.getLogger(__name__)
 LOG.setLevel(_logging.DEBUG)
