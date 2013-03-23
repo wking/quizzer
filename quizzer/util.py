@@ -17,9 +17,13 @@
 import logging as _logging
 import os.path as _os_path
 import subprocess as _subprocess
+import sys as _sys
 import tempfile as _tempfile
 
 from . import error as _error
+
+
+LOG = _logging.getLogger(__name__)
 
 
 def invoke(args, stdin=None, stdout=_subprocess.PIPE, stderr=_subprocess.PIPE,
@@ -34,16 +38,22 @@ def invoke(args, stdin=None, stdout=_subprocess.PIPE, stderr=_subprocess.PIPE,
             universal_newlines=universal_newlines, **kwargs)
     except FileNotFoundError as e:
         raise _error.CommandError(arguments=args, stdin=stdin) from e
-    try:
-        stdout,stderr = p.communicate(input=stdin, timeout=timeout)
-    except _subprocess.TimeoutExpired as e:
-        p.kill()
-        stdout,stderr = p.communicate()
-        status = p.wait()
-        raise _error.CommandError(
-            msg='timeout ({}s) expired'.format(timeout),
-            arguments=args, stdin=stdin, stdout=stdout, stderr=stderr,
-            status=status) from e
+    if _sys.version_info >= (3, 3):  # Python >= 3.3
+        try:
+            stdout,stderr = p.communicate(input=stdin, timeout=timeout)
+        except _subprocess.TimeoutExpired as e:
+            p.kill()
+            stdout,stderr = p.communicate()
+            status = p.wait()
+            raise _error.CommandError(
+                msg='timeout ({}s) expired'.format(timeout),
+                arguments=args, stdin=stdin, stdout=stdout, stderr=stderr,
+                status=status) from e
+    else:  # Python <= 3.2 don't support communicate(..., timeout)
+        if timeout is not None:
+            LOG.warning('Python version {} does not support timeouts'.format(
+                    _sys.version.split()[0]))
+        stdout,stderr = p.communicate(input=stdin)
     status = p.wait()
     if expect and status not in expect:
         raise _error.CommandError(

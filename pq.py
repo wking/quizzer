@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.3
+#!/usr/bin/env python
 #
 # Copyright (C) 2013 W. Trevor King <wking@tremily.us>
 #

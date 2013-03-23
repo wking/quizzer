@@ -71,7 +71,7 @@ The unanswered question (“What is your name?”) wasn't asked because
 the user successfully answered the question that depended on it (“What
 is your quest?”).
 
-Quizzer requires Python ≥ 3.3.  If Pygments is installed, the command
+Quizzer requires Python ≥ 3.2.  If Pygments is installed, the command
 line prompt will be colored.
 
 Types of questions:
@@ -90,6 +90,7 @@ Types of questions:
   temporary directories, and we judge success by comparing the output
   of the teardown phase (and optionally the output of the answer
   phase).  You can optionally set a timeout to catch answers that
-  hang.  There is no sandboxing (other than working in a scratch
-  directory), so it's not a good idea to serve questions like this on
-  a public interface (stick to ``cli``).
+  hang, although this requires Python ≥ 3.3.  There is no sandboxing
+  (other than working in a scratch directory), so it's not a good idea
+  to serve questions like this on a public interface (stick to
+  ``cli``).
