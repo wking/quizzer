@@ -14,7 +14,9 @@
 # You should have received a copy of the GNU General Public License along with
 # quizzer.  If not, see <http://www.gnu.org/licenses/>.
 
+import hashlib as _hashlib
 import logging as _logging
+import os.path as _os_path
 import select as _select
 import socket as _socket
 import re as _re
@@ -153,11 +155,13 @@ class QuestionApp (WSGI_UrlObject, WSGI_DataObject):
                 ('^question/', self._question),
                 ('^answer/', self._answer),
                 ('^results/', self._results),
+                ('^media/([^/]+)', self._media),
             ],
             **kwargs)
         self.ui = ui
 
         self.user_regexp = _re.compile('^\w+$')
+        self._local_media = {}
 
     def _index(self, environ, start_response):
         lines = [
@@ -217,7 +221,7 @@ class QuestionApp (WSGI_UrlObject, WSGI_DataObject):
         lc = len([a for a in answers if a['correct']])
         lines = [
             '<h2>Question</h2>',
-            '<p>{}</p>'.format(question.format_prompt(newline='<br />')),
+            self._format_prompt(question=question),
             '<p>Answers: {}/{} ({:.2f})</p>'.format(lc, la, float(lc)/la),
             ]
         if answers:
@@ -303,8 +307,7 @@ class QuestionApp (WSGI_UrlObject, WSGI_DataObject):
             '      <input type="hidden" name="user" value="{}">'.format(user),
             '      <input type="hidden" name="question" value="{}">'.format(
                 question.id),
-            '      <p>{}</p>'.format(
-                question.format_prompt(newline='<br/>')),
+            self._format_prompt(question=question),
             answer_element,
             '      <br />',
             '      <input type="submit" value="submit">',
@@ -372,8 +375,7 @@ class QuestionApp (WSGI_UrlObject, WSGI_DataObject):
             '  </head>',
             '  <body>',
             '    <h1>Answer</h1>',
-            '    <p>{}</p>'.format(
-                question.format_prompt(newline='<br/>')),
+            self._format_prompt(question=question),
             '    <pre>{}</pre>'.format(print_answer),
             '    <p>{}</p>'.format(correct_msg),
             details or '',
@@ -390,6 +392,45 @@ class QuestionApp (WSGI_UrlObject, WSGI_DataObject):
         return self.ok_response(
             environ, start_response, content=content, encoding='utf-8',
             content_type='text/html')
+
+    def _format_prompt(self, question):
+        lines = ['<p>{}</p>'.format(question.format_prompt(newline='<br/>\n'))]
+        for multimedia in question.multimedia:
+            lines.append(self._format_multimedia(multimedia=multimedia))
+        return '\n'.join(lines)
+
+    def _format_multimedia(self, multimedia):
+        content_type = multimedia['content-type']
+        if 'path' in multimedia:
+            uid = _hashlib.sha1(
+                str(multimedia).encode('unicode-escape')
+                ).hexdigest()
+            path = self.ui.quiz.multimedia_path(multimedia)
+            self._local_media[uid] = {
+                'content-type': content_type,
+                'path': path,
+                }
+            url = '../media/{}'.format(uid)
+        else:
+            raise NotImplementedError(multimedia)
+        if content_type.startswith('image/'):
+            return '<p><img src="{}" /></p>'.format(url)
+        else:
+            raise NotImplementedError(content_type)
+
+    def _media(self, environ, start_response):
+        try:
+            uid, = environ['{}.url_args'.format(self.setting)]
+        except:
+            raise HandlerError(404, 'Not Found')
+        if uid not in self._local_media:
+            raise HandlerError(404, 'Not Found')
+        content_type = self._local_media[uid]['content-type']
+        with open(self._local_media[uid]['path'], 'rb') as f:
+            content = f.read()
+        return self.ok_response(
+            environ, start_response, content=content,
+            content_type=content_type)
 
 
 class HTMLInterface (_UserInterface):

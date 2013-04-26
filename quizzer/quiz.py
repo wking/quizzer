@@ -16,6 +16,7 @@
 
 import codecs as _codecs
 import json as _json
+import os.path as _os_path
 
 from . import __version__
 from . import question as _question
@@ -91,6 +92,16 @@ class Quiz (list):
             raise KeyError(id)
         raise NotImplementedError(
             'multiple questions with one ID: {}'.format(matches))
+
+    def multimedia_path(self, multimedia):
+        if 'path' in multimedia:
+            basedir = _os_path.dirname(self.path)
+            path = multimedia['path']
+            if _os_path.sep != '/':  # convert to native separators
+                path = path.replace('/', _os_path.sep)
+            return _os_path.join(basedir, multimedia['path'])
+        else:
+            raise NotImplementedError(question.multimedia)
 
     def _upgrade_from_0_1(self, data):
         data['version'] = __version__

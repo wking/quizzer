@@ -15,6 +15,8 @@
 # quizzer.  If not, see <http://www.gnu.org/licenses/>.
 
 import cmd as _cmd
+import logging as _logging
+import os.path as _os_path
 try:
     import readline as _readline
 except ImportError as _readline_import_error:
@@ -30,6 +32,10 @@ except ImportError as e:
 from .. import error as _error
 from .. import question as _question
 from . import UserInterface as _UserInterface
+from . import util as _util
+
+
+_LOG = _logging.getLogger(__name__)
 
 
 class QuestionCommandLine (_cmd.Cmd):
@@ -47,6 +53,7 @@ class QuestionCommandLine (_cmd.Cmd):
         if self.ui.quiz.introduction:
             self.intro = '\n\n'.join([self.intro, self.ui.quiz.introduction])
         self._tempdir = None
+        self._children = []
 
     def get_question(self):
         self.question = self.ui.get_question(user=self.ui.user)
@@ -57,6 +64,10 @@ class QuestionCommandLine (_cmd.Cmd):
 
     def preloop(self):
         self.get_question()
+
+    def postcmd(self, stop, line):
+        self._reap_children()
+        return stop
 
     def _reset(self):
         self.answers = []
@@ -86,20 +97,48 @@ class QuestionCommandLine (_cmd.Cmd):
         self.prompt = _colorize(self.ui.colors['prompt'], self._prompt)
 
     def _extra_ps1_lines(self):
+        for multimedia in self.question.multimedia:
+            for line in self._format_multimedia(multimedia):
+                yield line  # for Python 3.3, use PEP 380's `yield from ...`
         if (isinstance(self.question, _question.ChoiceQuestion) and
                 self.question.display_choices):
-            for i,choice in enumerate(self.question.answer):
-                yield '{}) {}'.format(i, choice)
-            yield 'Answer with the index of your choice'
-            if self.question.accept_all:
-                conj = 'or'
-                if self.question.multiple_answers:
-                    conj = 'and/or'
-                yield '{} fill in an alternative answer'.format(conj)
-            if self.question.multiple_answers:
-                self._separator = ','
-                yield ("Separate multiple answers with the '{}' character"
-                       ).format(self._separator)
+            for line in self._format_choices(question=self.question):
+                yield line
+
+    def _format_multimedia(self, multimedia):
+        path = self.ui.quiz.multimedia_path(multimedia=multimedia)
+        content_type = multimedia['content-type']
+        try:
+            self._children.append(_util.mailcap_view(
+                    path=path, content_type=content_type, background=True))
+        except NotImplementedError:
+            path = _os_path.abspath(path)
+            yield 'multimedia ({}): {}'.format(content_type, path)
+
+    def _reap_children(self):
+        reaped = []
+        for process in self._children:
+            _LOG.debug('poll child process {}'.format(process.pid))
+            if process.poll() is not None:
+                _LOG.debug('process {} returned {}'.format(
+                        process.pid, process.returncode))
+                reaped.append(process)
+        for process in reaped:
+            self._children.remove(process)
+
+    def _format_choices(self, question):
+        for i,choice in enumerate(question.answer):
+            yield '{}) {}'.format(i, choice)
+        yield 'Answer with the index of your choice'
+        if question.accept_all:
+            conj = 'or'
+            if question.multiple_answers:
+                conj = 'and/or'
+            yield '{} fill in an alternative answer'.format(conj)
+        if question.multiple_answers:
+            self._separator = ','
+            yield ("Separate multiple answers with the '{}' character"
+                   ).format(self._separator)
 
     def _process_answer(self, answer):
         "Back out any mappings suggested by _extra_ps1_lines()"
@@ -213,7 +252,7 @@ class QuestionCommandLine (_cmd.Cmd):
 
     def do_copyright(self, arg):
         "Print the quiz copyright notice"
-        if self.ui.quiz.copyright:
+        if self.ui.quiz.copight:
             print('\n'.join(self.ui.quiz.copyright))
         else:
             print(self.ui.quiz.copyright)

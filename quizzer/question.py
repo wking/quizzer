@@ -33,6 +33,7 @@ class Question (object):
     _state_attributes = [
         'id',
         'prompt',
+        'multimedia',
         'answer',
         'accept_all',
         'multiline',
@@ -58,8 +59,6 @@ class Question (object):
     def __setstate__(self, state):
         if 'id' not in state:
             state['id'] = state.get('prompt', None)
-        if 'dependencies' not in state:
-            state['dependencies'] = []
         if 'tags' not in state:
             state['tags'] = set()
         else:
@@ -67,6 +66,9 @@ class Question (object):
         for attr in ['accept_all', 'multiline']:
             if attr not in state:
                 state[attr] = False
+        for attr in ['dependencies', 'multimedia']:
+            if attr not in state:
+                state[attr] = []
         for attr in self._state_attributes:
             if attr not in state:
                 state[attr] = None
