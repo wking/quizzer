@@ -51,6 +51,31 @@ class HandlerErrorApp (object):
             return []
 
 
+class WSGI_UrlObject (object):
+    """Useful WSGI utilities for handling URL delegation.
+    """
+    def __init__(self, urls=tuple(), default_handler=None, setting='quizzer',
+                 *args, **kwargs):
+        super(WSGI_UrlObject, self).__init__(*args, **kwargs)
+        self.urls = [
+            (_re.compile(regexp),callback) for regexp,callback in urls]
+        self.default_handler = default_handler
+        self.setting = setting
+
+    def __call__(self, environ, start_response):
+        "WSGI entry point"
+        path = environ.get('PATH_INFO', '').lstrip('/')
+        for regexp,callback in self.urls:
+            match = regexp.match(path)
+            if match is not None:
+                setting = '{}.url_args'.format(self.setting)
+                environ[setting] = match.groups()
+                return callback(environ, start_response)
+        if self.default_handler is None:
+            raise HandlerError(404, 'Not Found')
+        return self.default_handler(environ, start_response)
+
+
 class WSGI_DataObject (object):
     "Useful WSGI utilities for handling POST data"
     def __init__(self, **kwargs):
@@ -114,7 +139,7 @@ class WSGI_DataObject (object):
         return ''
 
 
-class QuestionApp (WSGI_DataObject):
+class QuestionApp (WSGI_UrlObject, WSGI_DataObject):
     """WSGI client serving quiz questions
 
     For details on WGSI, see `PEP 333`_.
@@ -122,27 +147,17 @@ class QuestionApp (WSGI_DataObject):
     .. _PEP 333: http://www.python.org/dev/peps/pep-0333/
     """
     def __init__(self, ui, **kwargs):
-        super(QuestionApp, self).__init__(**kwargs)
+        super(QuestionApp, self).__init__(
+            urls=[
+                ('^$', self._index),
+                ('^question/', self._question),
+                ('^answer/', self._answer),
+                ('^results/', self._results),
+            ],
+            **kwargs)
         self.ui = ui
-        self.urls = [
-            (_re.compile('^$'), self._index),
-            (_re.compile('^question/'), self._question),
-            (_re.compile('^answer/'), self._answer),
-            (_re.compile('^results/'), self._results),
-            ]
-        self.setting = 'quizzer'
-        self.user_regexp = _re.compile('^\w+$')
 
-    def __call__(self, environ, start_response):
-        "WSGI entry point"
-        path = environ.get('PATH_INFO', '').lstrip('/')
-        for regexp,callback in self.urls:
-            match = regexp.match(path)
-            if match is not None:
-                setting = '{}.url_args'.format(self.setting)
-                environ[setting] = match.groups()
-                return callback(environ, start_response)
-        raise HandlerError(404, 'Not Found')
+        self.user_regexp = _re.compile('^\w+$')
 
     def _index(self, environ, start_response):
         lines = [
